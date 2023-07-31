@@ -17,7 +17,7 @@
 	},
 	"contracts": {
 		"NonFungibleToken": {
-			"source": "./node_modules/@flowty/flow-contracts/contracts/NonFungibleToken.cdc",
+			"source": "./node_modules/@flowtyio/flow-contracts/contracts/NonFungibleToken.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20",
@@ -25,7 +25,7 @@
 			}
 		},
 		"MetadataViews": {
-			"source": "./node_modules/@flowty/flow-contracts/contracts/MetadataViews.cdc",
+			"source": "./node_modules/@flowtyio/flow-contracts/contracts/MetadataViews.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20",
@@ -33,7 +33,7 @@
 			}
 		},
 		"FungibleToken": {
-			"source": "./node_modules/@flowty/flow-contracts/contracts/FungibleToken.cdc",
+			"source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
 			"aliases": {
 				"emulator": "0xee82856bf20e2aa6",
 				"testnet": "0x9a0766d93b6608b7",
@@ -41,7 +41,7 @@
 			}
 		},
 		"ViewResolver": {
-			"source": "./node_modules/@flowty/flow-contracts/contracts/ViewResolver.cdc",
+			"source": "./node_modules/@flowtyio/flow-contracts/contracts/ViewResolver.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20",

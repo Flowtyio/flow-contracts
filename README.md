@@ -1,7 +1,7 @@
 # flow-contracts
 
 ```
-npm i @flowty/flow-contracts
+npm i @flowtyio/flow-contracts
 ```
 
 This repository publishes common Flow contracts as an npm package so that they can be more easily consumed. 
@@ -36,7 +36,7 @@ For example, here is how you might add `NonFungibleToken` to your flow.json :
 	},
 	"contracts": {
 		"NonFungibleToken": {
-			"source": "./node_modules/@flowty/flow-contracts/contracts/NonFungibleToken.cdc",
+			"source": "./node_modules/@flowtyio/flow-contracts/contracts/NonFungibleToken.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20",
@@ -83,7 +83,7 @@ you will need to:
 	},
 	"contracts": {
 		"FungibleToken": {
-			"source": "./node_modules/@flowty/flow-contracts/contracts/FungibleToken.cdc",
+			"source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
 			"aliases": {
 				"emulator": "0xee82856bf20e2aa6",
 			}
