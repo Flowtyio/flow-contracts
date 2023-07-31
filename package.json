@@ -1,0 +1,9 @@
+{
+    "name": "@flowty/flow-contracts",
+    "version": "0.0.1",
+    "main": "index.json", 
+    "description": "An NPM package for common flow contracts",
+    "author": "FlowtyIO",
+    "license": "MIT"
+  }
+  
