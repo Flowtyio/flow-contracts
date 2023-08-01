@@ -48,6 +48,8 @@ const importContract = (contractName, source, config, account) => {
     return
   }
 
+  contract.source = `./node_modules/@flowtyio/flow-contracts/contracts/${contractName}.cdc`
+
   if (specialContractsHandlers[contractName]) {
     specialContractsHandlers[contractName](contract, newConfig, account)
   } else {
@@ -70,11 +72,13 @@ const add = ({name, config, account}) => {
 
   const exampleConfigLocation = `${__dirname}/flow.json`
   const exampleConfig = getConfig(exampleConfigLocation)
-  const contract = exampleConfig.contracts[name]
+  let contract = exampleConfig.contracts[name]
   if (!contract) {
     console.error(`Contract "${name}" could not be found`)
     return
   }
+
+  contract.source = `./node_modules/@flowtyio/flow-contracts/contracts/${name}.cdc`
 
   if (!userConfig.contracts) {
     userConfig.contracts = {}
