@@ -4,6 +4,33 @@
 npm i @flowty/flow-contracts
 ```
 
+## Commands
+
+**These commands assume you have installed flow-contracts and npx on your machine**
+
+You can use `flow-contracts` to edit your own flow configuration so that you don't have to manually add contracts to your project.
+Currently, there are two commands:
+- add -> adds a contract and its dependencies to your flow.json
+- add-all -> adds all contracts in this repo to your flow.json
+
+### Add a contract
+
+Adds a contract and its dependencies to your flow.json. This command will also add the contract to your emulator deployment section.
+If there are any contracts already defined in your config which would be imported, it will be skipped
+
+```
+npx flow-contracts add MetadataViews -c /path/to/config/flow.json
+```
+
+### Add all contracts
+
+Adds all contracts maintained in this repo to your own flow.json, and add them to your emulator deployment section.
+
+```
+npx flow-contracts add-all -c /path/to/config/flow.json
+```
+
+
 This repository publishes common Flow contracts as an npm package so that they can be more easily consumed. 
 Currently, the list includes:
 

@@ -1,6 +1,6 @@
 {
-    "name": "@flowty/flow-contracts",
-    "version": "0.0.3",
+    "name": "@flowtyio/flow-contracts",
+    "version": "0.0.4",
     "main": "index.json",
     "description": "An NPM package for common flow contracts",
     "author": "flowtyio",
@@ -10,13 +10,26 @@
         "url": "git+https://github.com/Flowtyio/flow-contracts.git"
     },
     "keywords": [
-      "cadence",
-      "nft",
-      "NonFungibleToken",
-      "flow"
+        "cadence",
+        "nft",
+        "NonFungibleToken",
+        "flow"
     ],
     "bugs": {
         "issues": "https://github.com/Flowtyio/flow-contracts/issues"
     },
-    "homepage": "https://github.com/Flowtyio/flow-contracts/blob/main/README.md"
-  }
+    "homepage": "https://github.com/Flowtyio/flow-contracts/blob/main/README.md",
+    "dependencies": {
+        "commander": "^11.0.0"
+    },
+    "bin": {
+        "flow-contracts": "./index.js"
+    },
+    "files": [
+        "*.js",
+        "README.md",
+        "index.json",
+        "contracts/*.cdc",
+        "LICENSE"
+    ]
+}
