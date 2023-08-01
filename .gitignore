@@ -1,3 +1,5 @@
 node_modules
-example/package-lock.json
 .idea
+
+example/package-lock.json
+example/nohup.out

@@ -24,6 +24,6 @@ jobs:
       with:
         node-version: '14'
     - name: Install Flow CLI
-      run: bash -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)" -- v1.3.2
+      run: bash -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)" -- v1.3.3
     - name: Run tests
       run: sh ./test.sh
