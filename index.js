@@ -17,6 +17,7 @@ program.command('add')
   .action((contractName, options) => {
     if(!options.config) {
       options.config = getDefaultConfigPath()
+      console.log("no config specified, using default config: ", options.config)
     }
 
     add(
@@ -32,7 +33,8 @@ program.command("add-all")
   .option('-a, --account <account>', 'Account to be used for signing', 'emulator-account')
   .action(({config, account}) => {
     if(!config) {
-      config = getDefaultConfigPath()
+      options.config = getDefaultConfigPath()
+      console.log("no config specified, using default config: ", options.config)
     }
 
     addAll(config, account)

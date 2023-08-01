@@ -1,6 +1,6 @@
 {
     "name": "@flowtyio/flow-contracts",
-    "version": "0.0.4",
+    "version": "0.0.8",
     "main": "index.json",
     "description": "An NPM package for common flow contracts",
     "author": "flowtyio",
@@ -27,9 +27,10 @@
     },
     "files": [
         "*.js",
-        "README.md",
         "index.json",
         "contracts/*.cdc",
+        "flow.json",
+        "README.md",
         "LICENSE"
     ]
 }
