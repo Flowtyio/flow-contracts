@@ -1,4 +1,5 @@
 const fs = require("fs");
+const {findFileInDirectory} = require("./find");
 
 const getDefaultConfigPath = () => {
   const currentWorkingDirectory = process.cwd();
@@ -15,7 +16,7 @@ const getConfig = (path) => {
 }
 
 const getContractCode = (contractName) => {
-  const path = `${__dirname}/contracts/${contractName}.cdc`
+  const path = findFileInDirectory(`${__dirname}/contracts`, `${contractName}.cdc`)
   return fs.readFileSync(path, 'utf8')
 }
 
