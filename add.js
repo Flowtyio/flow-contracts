@@ -48,7 +48,7 @@ const importContract = (contractName, source, config, account) => {
     return
   }
 
-  contract.source = `./node_modules/@flowtyio/flow-contracts/contracts/${contractName}.cdc`
+  contract.source = contract.source.replace("./contracts/", "./node_modules/@flowtyio/flow-contracts/contracts/")
 
   if (specialContractsHandlers[contractName]) {
     specialContractsHandlers[contractName](contract, newConfig, account)
@@ -78,7 +78,7 @@ const add = ({name, config, account}) => {
     return
   }
 
-  contract.source = `./node_modules/@flowtyio/flow-contracts/contracts/${name}.cdc`
+  contract.source = contract.source.replace("./contracts/", "./node_modules/@flowtyio/flow-contracts/contracts/")
 
   if (!userConfig.contracts) {
     userConfig.contracts = {}
