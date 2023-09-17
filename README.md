@@ -1,7 +1,7 @@
 # flow-contracts
 
 ```
-npm i @flowty/flow-contracts
+npm i @flowtyio/flow-contracts
 ```
 
 ## Commands
