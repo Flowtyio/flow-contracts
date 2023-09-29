@@ -40,17 +40,17 @@ Currently, the list includes:
 | NonFungibleToken | 0x1d7e57aa55817448 | 0x631e88ae7f1d7c20 |
 | MetadataViews | 0x1d7e57aa55817448 | 0x631e88ae7f1d7c20 |
 | ViewResolver | 0x1d7e57aa55817448 | 0x631e88ae7f1d7c20 |
-| HybridCusody | 0x294e44e1ec6993c6 | N/A |
-| CapabilityFactory | 0x294e44e1ec6993c6 | N/A |
-| CapabilityFilter | 0x294e44e1ec6993c6 | N/A |
-| CapabilityDelegator | 0x294e44e1ec6993c6 | N/A |
-| FTAllFactory | 0x294e44e1ec6993c6 | N/A |
-| FTBalanceFactory | 0x294e44e1ec6993c6 | N/A |
-| FTProviderFactory | 0x294e44e1ec6993c6 | N/A |
-| FTReceiverFactory | 0x294e44e1ec6993c6 | N/A |
-| NFTCollectionPublicFactory | 0x294e44e1ec6993c6 | N/A |
-| NFTProviderAndCollectionPublicFactory | 0x294e44e1ec6993c6 | N/A |
-| NFTProviderFactory | 0x294e44e1ec6993c6 | N/A |
+| HybridCusody | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| CapabilityFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| CapabilityFilter | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| CapabilityDelegator | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| FTAllFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| FTBalanceFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| FTProviderFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| FTReceiverFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| NFTCollectionPublicFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| NFTProviderAndCollectionPublicFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| NFTProviderFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
 
 
 ## Using a contract

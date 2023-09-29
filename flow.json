@@ -52,77 +52,88 @@
       "source": "./contracts/hybrid-custody/HybridCustody.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "CapabilityFactory": {
       "source": "./contracts/hybrid-custody/CapabilityFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "CapabilityDelegator": {
       "source": "./contracts/hybrid-custody/CapabilityDelegator.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "CapabilityFilter": {
       "source": "./contracts/hybrid-custody/CapabilityFilter.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "FTAllFactory": {
       "source": "./contracts/hybrid-custody/factories/FTAllFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "FTBalanceFactory": {
       "source": "./contracts/hybrid-custody/factories/FTBalanceFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "FTProviderFactory": {
       "source": "./contracts/hybrid-custody/factories/FTProviderFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "FTReceiverFactory": {
       "source": "./contracts/hybrid-custody/factories/FTReceiverFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "NFTCollectionPublicFactory": {
       "source": "./contracts/hybrid-custody/factories/NFTCollectionPublicFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "NFTProviderAndCollectionPublicFactory": {
       "source": "./contracts/hybrid-custody/factories/NFTProviderAndCollectionPublicFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
     "NFTProviderFactory": {
       "source": "./contracts/hybrid-custody/factories/NFTProviderFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6"
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
       }
     }
   },
