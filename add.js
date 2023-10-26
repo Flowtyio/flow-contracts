@@ -36,6 +36,41 @@ const specialContractsHandlers = {
     if (!userConfig.deployments.emulator[emulatorAcct].includes(name)) {
       userConfig.deployments.emulator[emulatorAcct].push(name)
     }
+  },
+  "FlowToken": (contract, userConfig, account) => {
+    console.log("FlowToken requires some special setup. The account `emulator-flowtoken` " +
+      "will be created and the contract will be deployed to it on the emulator. \nGoing forward, any deployments to the " +
+      "flow emulator will require the --update flag to work correctly.")
+
+    const name = "FlowToken"
+
+    const serverPK = userConfig.accounts[account].key
+    const ftAccount = {
+      address: "e5a8b7f23e8b548f", // this is the FungibleToken address on the flow emulator
+      key: serverPK
+    }
+    const emulatorAcct = "emulator-flowtoken"
+
+    // ensure emulator-ft is an account
+    userConfig.accounts[emulatorAcct] = ftAccount
+    if (!userConfig.deployments) {
+      userConfig.deployments = {}
+    }
+
+    // ensure that emulator-ft is a deployment account
+    if (!userConfig.deployments.emulator) {
+      userConfig.deployments.emulator = {}
+    }
+
+    if (!userConfig.deployments.emulator[emulatorAcct]) {
+      userConfig.deployments.emulator[emulatorAcct] = []
+    }
+
+    userConfig.contracts[name] = contract
+
+    if (!userConfig.deployments.emulator[emulatorAcct].includes(name)) {
+      userConfig.deployments.emulator[emulatorAcct].push(name)
+    }
   }
 }
 
