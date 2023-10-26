@@ -171,6 +171,30 @@
         "testnet": "0x7e60df042a9c0868",
         "mainnet": "0x1654653399040a61"
       }
+    },
+    "TokenForwarding": {
+      "source": "./contracts/TokenForwarding.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x51ea0e37c27a1f1a",
+        "mainnet": "0xe544175ee0461c4b"
+      }
+    },
+    "DapperUtilityCoin": {
+      "source": "./contracts/dapper/DapperUtilityCoin.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x82ec283f88a62e65",
+        "mainnet": "0xead892083b3e2c6c"
+      }
+    },
+    "FlowUtilityToken": {
+      "source": "./contracts/dapper/FlowUtilityToken.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x82ec283f88a62e65",
+        "mainnet": "0xead892083b3e2c6c"
+      }
     }
   },
   "deployments": {
@@ -180,7 +204,10 @@
         "MetadataViews",
         "ViewResolver",
         "NFTCatalog",
-        "NFTCatalogAdmin"
+        "NFTCatalogAdmin",
+        "TokenForwarding",
+        "DapperUtilityCoin",
+        "FlowUtilityToken"
       ],
       "emulator-ft": [
         "FungibleToken",

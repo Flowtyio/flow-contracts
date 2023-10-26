@@ -52,6 +52,11 @@ Currently, the list includes:
 | NFTProviderAndCollectionPublicFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
 | NFTProviderFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
 | NFTCatalog | 0x49a7cda3a1eecc29 | 0x324c34e1c517e4db |
+| NFTCatalogAdmin | 0x49a7cda3a1eecc29 | 0x324c34e1c517e4db |
+| FlowToken | 0x7e60df042a9c0868 | 0x1654653399040a61 |
+| TokenForwarding | 0x51ea0e37c27a1f1a | 0xe544175ee0461c4b |
+| DapperUtilityCoin | 0x82ec283f88a62e65 | 0xead892083b3e2c6c |
+| FlowUtilityToken | 0x82ec283f88a62e65 | 0xead892083b3e2c6c |
 
 
 ## Using a contract
