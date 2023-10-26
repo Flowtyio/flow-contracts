@@ -135,6 +135,22 @@
         "testnet": "0x294e44e1ec6993c6",
         "mainnet": "0xd8a7e05a7ac670c0"
       }
+    },
+    "NFTCatalog": {
+      "source": "./contracts/nft-catalog/NFTCatalog.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x324c34e1c517e4db",
+        "mainnet": "0x49a7cda3a1eecc29"
+      }
+    },
+    "NFTCatalogAdmin": {
+      "source": "./contracts/nft-catalog/NFTCatalogAdmin.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x324c34e1c517e4db",
+        "mainnet": "0x49a7cda3a1eecc29"
+      }
     }
   },
   "deployments": {
@@ -142,7 +158,9 @@
       "emulator-account": [
         "NonFungibleToken",
         "MetadataViews",
-        "ViewResolver"
+        "ViewResolver",
+        "NFTCatalog",
+        "NFTCatalogAdmin"
       ],
       "emulator-ft": [
         "FungibleToken"
