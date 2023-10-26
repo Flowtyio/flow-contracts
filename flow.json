@@ -13,6 +13,10 @@
     "emulator-ft": {
       "address": "ee82856bf20e2aa6",
       "key": "a8201e155882e2a7ec94644ef0f023ecce8baec418276f95217db1ecf90b03db"
+    },
+    "emulator-flowtoken": {
+      "address": "0ae53cb6e3f42a79",
+      "key": "a8201e155882e2a7ec94644ef0f023ecce8baec418276f95217db1ecf90b03db"
     }
   },
   "contracts": {
@@ -34,6 +38,14 @@
     },
     "FungibleToken": {
       "source": "./contracts/FungibleToken.cdc",
+      "aliases": {
+        "emulator": "0xee82856bf20e2aa6",
+        "testnet": "0x9a0766d93b6608b7",
+        "mainnet": "0xf233dcee88fe0abe"
+      }
+    },
+    "FungibleTokenMetadataViews": {
+      "source": "./contracts/FungibleTokenMetadataViews.cdc",
       "aliases": {
         "emulator": "0xee82856bf20e2aa6",
         "testnet": "0x9a0766d93b6608b7",
@@ -151,6 +163,14 @@
         "testnet": "0x324c34e1c517e4db",
         "mainnet": "0x49a7cda3a1eecc29"
       }
+    },
+    "FlowToken": {
+      "source": "./contracts/FlowToken.cdc",
+      "aliases": {
+        "emulator": "0x0ae53cb6e3f42a79",
+        "testnet": "0x7e60df042a9c0868",
+        "mainnet": "0x1654653399040a61"
+      }
     }
   },
   "deployments": {
@@ -163,7 +183,11 @@
         "NFTCatalogAdmin"
       ],
       "emulator-ft": [
-        "FungibleToken"
+        "FungibleToken",
+        "FungibleTokenMetadataViews"
+      ],
+      "emulator-flowtoken": [
+        "FlowToken"
       ]
     }
   }

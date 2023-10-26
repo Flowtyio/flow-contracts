@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@flowty/flow-contracts": "file:..",
     "@flowtyio/flow-contracts": "file:.."
   }
 }
