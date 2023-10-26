@@ -33,8 +33,8 @@ program.command("add-all")
   .option('-a, --account <account>', 'Account to be used for signing', 'emulator-account')
   .action(({config, account}) => {
     if(!config) {
-      options.config = getDefaultConfigPath()
-      console.log("no config specified, using default config: ", options.config)
+      config = getDefaultConfigPath()
+      console.log("no config specified, using default config: ", config)
     }
 
     addAll(config, account)

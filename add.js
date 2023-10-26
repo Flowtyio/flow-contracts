@@ -3,39 +3,10 @@ const {getImports} = require("./dependency-tree");
 
 const specialContractsHandlers = {
   "FungibleToken": (contract, userConfig, account) => {
-    console.log("FungibleToken requires some special setup. The account `emulator-ft` " +
-      "will be created and the contract will be deployed to it on the emulator. \nGoing forward, any deployments to the " +
-      "flow emulator will require the --update flag to work correctly.")
-
-    const name = "FungibleToken"
-
-    const serverPK = userConfig.accounts[account].key
-    const ftAccount = {
-      address: "ee82856bf20e2aa6", // this is the FungibleToken address on the flow emulator
-      key: serverPK
-    }
-    const emulatorAcct = "emulator-ft"
-
-    // ensure emulator-ft is an account
-    userConfig.accounts[emulatorAcct] = ftAccount
-    if (!userConfig.deployments) {
-      userConfig.deployments = {}
-    }
-
-    // ensure that emulator-ft is a deployment account
-    if (!userConfig.deployments.emulator) {
-      userConfig.deployments.emulator = {}
-    }
-
-    if (!userConfig.deployments.emulator[emulatorAcct]) {
-      userConfig.deployments.emulator[emulatorAcct] = []
-    }
-
-    userConfig.contracts[name] = contract
-
-    if (!userConfig.deployments.emulator[emulatorAcct].includes(name)) {
-      userConfig.deployments.emulator[emulatorAcct].push(name)
-    }
+    return handleFungibleTokenAccountContract(contract, userConfig, account, "FungibleToken")
+  },
+  "FungibleTokenMetadataViews": (contract, userConfig, account) => {
+    return handleFungibleTokenAccountContract(contract, userConfig, account, "FungibleTokenMetadataViews")
   },
   "FlowToken": (contract, userConfig, account) => {
     console.log("FlowToken requires some special setup. The account `emulator-flowtoken` " +
@@ -46,7 +17,7 @@ const specialContractsHandlers = {
 
     const serverPK = userConfig.accounts[account].key
     const ftAccount = {
-      address: "e5a8b7f23e8b548f", // this is the FungibleToken address on the flow emulator
+      address: "0ae53cb6e3f42a79", // this is the FungibleToken address on the flow emulator
       key: serverPK
     }
     const emulatorAcct = "emulator-flowtoken"
@@ -164,6 +135,40 @@ const addAll = (path, account) => {
   Object.keys(projectConfig.contracts).forEach(name => {
     add({name, config: configPath, account})
   })
+}
+
+const handleFungibleTokenAccountContract = (contract, userConfig, account, contractName) => {
+  console.log(`FungibleToken requires some special setup. The account "emulator-ft"\n
+  will be created and the contract will be deployed to it on the emulator. \nGoing forward, any deployments to the\n
+  flow emulator will require the --update flag to work correctly.`)
+
+  const serverPK = userConfig.accounts[account].key
+  const ftAccount = {
+    address: "ee82856bf20e2aa6", // this is the FungibleToken address on the flow emulator
+    key: serverPK
+  }
+  const emulatorAcct = "emulator-ft"
+
+  // ensure emulator-ft is an account
+  userConfig.accounts[emulatorAcct] = ftAccount
+  if (!userConfig.deployments) {
+    userConfig.deployments = {}
+  }
+
+  // ensure that emulator-ft is a deployment account
+  if (!userConfig.deployments.emulator) {
+    userConfig.deployments.emulator = {}
+  }
+
+  if (!userConfig.deployments.emulator[emulatorAcct]) {
+    userConfig.deployments.emulator[emulatorAcct] = []
+  }
+
+  userConfig.contracts[contractName] = contract
+
+  if (!userConfig.deployments.emulator[emulatorAcct].includes(contractName)) {
+    userConfig.deployments.emulator[emulatorAcct].push(contractName)
+  }
 }
 
 module.exports = {
