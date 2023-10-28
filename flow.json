@@ -203,6 +203,30 @@
         "testnet": "0x82ec283f88a62e65",
         "mainnet": "0xead892083b3e2c6c"
       }
+    },
+    "LostAndFound": {
+      "source": "./contracts/lost-and-found/LostAndFound.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0xbe4635353f55bbd4",
+        "mainnet": "0x473d6a2c37eab5be"
+      }
+    },
+    "LostAndFoundHelper": {
+      "source": "./contracts/lost-and-found/LostAndFoundHelper.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0xbe4635353f55bbd4",
+        "mainnet": "0x473d6a2c37eab5be"
+      }
+    },
+    "FeeEstimator": {
+      "source": "./contracts/lost-and-found/FeeEstimator.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0xbe4635353f55bbd4",
+        "mainnet": "0x473d6a2c37eab5be"
+      }
     }
   },
   "deployments": {
@@ -215,7 +239,11 @@
         "NFTCatalogAdmin",
         "TokenForwarding",
         "DapperUtilityCoin",
-        "FlowUtilityToken"
+        "FlowUtilityToken",
+        "FlowStorageFees",
+        "FeeEstimator",
+        "LostAndFound",
+        "LostAndFoundHelper"
       ],
       "emulator-ft": [
         "FungibleToken",
