@@ -227,6 +227,46 @@
         "testnet": "0xbe4635353f55bbd4",
         "mainnet": "0x473d6a2c37eab5be"
       }
+    },
+    "TopShot": {
+      "source": "./contracts/dapper/TopShot.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x877931736ee77cff",
+        "mainnet": "0x0b2a3299cc857e29"
+      }
+    },
+    "TopShotLocking": {
+      "source": "./contracts/dapper/TopShotLocking.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x877931736ee77cff",
+        "mainnet": "0x0b2a3299cc857e29"
+      }
+    },
+    "DapperOffersV2": {
+      "source": "./contracts/dapper/offers/DapperOffersV2.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x8a5f647e58dde1ee",
+        "mainnet": "0xb8ea91944fd51c43"
+      }
+    },
+    "OffersV2": {
+      "source": "./contracts/dapper/offers/OffersV2.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x8a5f647e58dde1ee",
+        "mainnet": "0xb8ea91944fd51c43"
+      }
+    },
+    "Resolver": {
+      "source": "./contracts/dapper/offers/Resolver.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x8a5f647e58dde1ee",
+        "mainnet": "0xb8ea91944fd51c43"
+      }
     }
   },
   "deployments": {
@@ -243,7 +283,12 @@
         "FlowStorageFees",
         "FeeEstimator",
         "LostAndFound",
-        "LostAndFoundHelper"
+        "LostAndFoundHelper",
+        "Resolver",
+        "DapperOffersV2",
+        "OffersV2",
+        "TopShot",
+        "TopShotLocking"
       ],
       "emulator-ft": [
         "FungibleToken",
