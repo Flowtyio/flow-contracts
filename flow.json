@@ -267,6 +267,30 @@
         "testnet": "0x8a5f647e58dde1ee",
         "mainnet": "0xb8ea91944fd51c43"
       }
+    },
+    "ArrayUtils": {
+      "source": "./contracts/flow-utils/ArrayUtils.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x31ad40c07a2a9788",
+        "mainnet": "0xa340dc0a4ec828ab"
+      }
+    },
+    "StringUtils": {
+      "source": "./contracts/flow-utils/StringUtils.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x31ad40c07a2a9788",
+        "mainnet": "0xa340dc0a4ec828ab"
+      }
+    },
+    "AddressUtils": {
+      "source": "./contracts/flow-utils/AddressUtils.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x31ad40c07a2a9788",
+        "mainnet": "0xa340dc0a4ec828ab"
+      }
     }
   },
   "deployments": {
@@ -288,7 +312,10 @@
         "DapperOffersV2",
         "OffersV2",
         "TopShot",
-        "TopShotLocking"
+        "TopShotLocking",
+        "ArrayUtils",
+        "StringUtils",
+        "AddressUtils"
       ],
       "emulator-ft": [
         "FungibleToken",
