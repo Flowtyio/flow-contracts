@@ -9,6 +9,7 @@ import "FlowToken"
 import "LostAndFoundHelper"
 import "DapperOffersV2"
 import "TopShot"
+import "AddressUtils"
 
 // This contract doesn't do anything, it's just to show that deployments work
 // with this import system
