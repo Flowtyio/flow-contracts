@@ -291,6 +291,22 @@
         "testnet": "0x31ad40c07a2a9788",
         "mainnet": "0xa340dc0a4ec828ab"
       }
+    },
+    "ScopedFTProviders": {
+      "source": "./contracts/flow-utils/ScopedFTProviders.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x31ad40c07a2a9788",
+        "mainnet": "0xa340dc0a4ec828ab"
+      }
+    },
+    "ScopedNFTProviders": {
+      "source": "./contracts/flow-utils/ScopedNFTProviders.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x31ad40c07a2a9788",
+        "mainnet": "0xa340dc0a4ec828ab"
+      }
     }
   },
   "deployments": {
@@ -315,7 +331,9 @@
         "TopShotLocking",
         "ArrayUtils",
         "StringUtils",
-        "AddressUtils"
+        "AddressUtils",
+        "ScopedNFTProviders",
+        "ScopedFTProviders"
       ],
       "emulator-ft": [
         "FungibleToken",
