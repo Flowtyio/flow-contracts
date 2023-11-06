@@ -57,6 +57,11 @@ Currently, the list includes:
 | TokenForwarding | 0x51ea0e37c27a1f1a | 0xe544175ee0461c4b |
 | DapperUtilityCoin | 0x82ec283f88a62e65 | 0xead892083b3e2c6c |
 | FlowUtilityToken | 0x82ec283f88a62e65 | 0xead892083b3e2c6c |
+| ArrayUtils| 0x31ad40c07a2a9788 | 0xa340dc0a4ec828ab |
+| StringUtils| 0x31ad40c07a2a9788 | 0xa340dc0a4ec828ab |
+| AddressUtils | 0x31ad40c07a2a9788 | 0xa340dc0a4ec828ab |
+| ScopedNFTProviders | 0x31ad40c07a2a9788 | 0xa340dc0a4ec828ab |
+| ScopedFTProviders | 0x31ad40c07a2a9788 | 0xa340dc0a4ec828ab |
 
 
 ## Using a contract
