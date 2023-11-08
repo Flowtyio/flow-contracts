@@ -307,6 +307,22 @@
         "testnet": "0x31ad40c07a2a9788",
         "mainnet": "0xa340dc0a4ec828ab"
       }
+    },
+    "FindViews": {
+      "source": "./contracts/find/FindViews.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "mainnet": "0x097bafa4e0b48eef",
+        "testnet": "0x35717efbbce11c74"
+      }
+    },
+    "FLOAT": {
+      "source": "./contracts/emerald-city/FLOAT.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "mainnet": "0x2d4c3caffbeab845",
+        "testnet": "0x4d47bf3ce5e4393f"
+      }
     }
   },
   "deployments": {
@@ -333,7 +349,9 @@
         "StringUtils",
         "AddressUtils",
         "ScopedNFTProviders",
-        "ScopedFTProviders"
+        "ScopedFTProviders",
+        "FindViews",
+        "FLOAT"
       ],
       "emulator-ft": [
         "FungibleToken",

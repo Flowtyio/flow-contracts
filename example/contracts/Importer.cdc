@@ -12,6 +12,8 @@ import "TopShot"
 import "AddressUtils"
 import "ScopedNFTProviders"
 import "ScopedFTProviders"
+import "FindViews"
+import "FLOAT"
 
 // This contract doesn't do anything, it's just to show that deployments work
 // with this import system
