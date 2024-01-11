@@ -323,6 +323,20 @@
         "mainnet": "0x2d4c3caffbeab845",
         "testnet": "0x4d47bf3ce5e4393f"
       }
+    },
+    "ExampleNFT": {
+      "source": "./contracts/example/ExampleNFT.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testing": "0x0000000000000007"
+      }
+    },
+    "ExampleToken": {
+      "source": "./contracts/example/ExampleToken.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testing": "0x0000000000000007"
+      }
     }
   },
   "deployments": {
@@ -351,7 +365,9 @@
         "ScopedNFTProviders",
         "ScopedFTProviders",
         "FindViews",
-        "FLOAT"
+        "FLOAT",
+        "ExampleNFT",
+        "ExampleToken"
       ],
       "emulator-ft": [
         "FungibleToken",
