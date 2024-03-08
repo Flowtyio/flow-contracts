@@ -1,17 +1,17 @@
 /*
  * The FlowStorageFees smart contract
  *
- * An account's storage capacity determines up to how much storage on chain it can use.
+ * An account's storage capacity determines up to how much storage on chain it can use. 
  * A storage capacity is calculated by multiplying the amount of reserved flow with `StorageFee.storageMegaBytesPerReservedFLOW`
  * The minimum amount of flow tokens reserved for storage capacity is `FlowStorageFees.minimumStorageReservation` this is paid during account creation, by the creator.
- *
- * At the end of all transactions, any account that had any value changed in their storage
+ * 
+ * At the end of all transactions, any account that had any value changed in their storage 
  * has their storage capacity checked against their storage used and their main flow token vault against the minimum reservation.
  * If any account fails this check the transaction wil fail.
- *
- * An account moving/deleting its `FlowToken.Vault` resource will result
+ * 
+ * An account moving/deleting its `FlowToken.Vault` resource will result 
  * in the transaction failing because the account will have no storage capacity.
- *
+ * 
  */
 
 import "FungibleToken"
@@ -26,8 +26,8 @@ access(all) contract FlowStorageFees {
     access(all) event MinimumStorageReservationChanged(_ minimumStorageReservation: UFix64)
 
     // Defines how much storage capacity every account has per reserved Flow token.
-    // definition is written per unit of flow instead of the inverse,
-    // so there is no loss of precision calculating storage from flow,
+    // definition is written per unit of flow instead of the inverse, 
+    // so there is no loss of precision calculating storage from flow, 
     // but there is loss of precision when calculating flow per storage.
     access(all) var storageMegaBytesPerReservedFLOW: UFix64
 
@@ -68,7 +68,7 @@ access(all) contract FlowStorageFees {
         let acct = getAccount(accountAddress)
 
         if let balanceRef = acct.capabilities.borrow<&FlowToken.Vault>(/public/flowTokenBalance) {
-            balance = balanceRef.getBalance()
+            balance = balanceRef.balance
         }
 
         return self.accountBalanceToAccountStorageCapacity(balance)
@@ -86,7 +86,7 @@ access(all) contract FlowStorageFees {
 
     // getAccountsCapacityForTransactionStorageCheck returns the storage capacity of a batch of accounts
     // This is used to check if a transaction will fail because of any account being over the storage capacity
-    // The payer is an exception as its storage capacity is derived from its balance minus the maximum possible transaction fees
+    // The payer is an exception as its storage capacity is derived from its balance minus the maximum possible transaction fees 
     // (transaction fees if the execution effort is at the execution efort limit, a.k.a.: computation limit, a.k.a.: gas limit)
     access(all) fun getAccountsCapacityForTransactionStorageCheck(accountAddresses: [Address], payer: Address, maxTxFees: UFix64): [UFix64] {
         let capacities: [UFix64] = []
@@ -97,13 +97,13 @@ access(all) contract FlowStorageFees {
             if let balanceRef = acct.capabilities.borrow<&FlowToken.Vault>(/public/flowTokenBalance) {
                 if accountAddress == payer {
                     // if the account is the payer, deduct the maximum possible transaction fees from the balance
-                    balance = balanceRef.getBalance().saturatingSubtract(maxTxFees)
+                    balance = balanceRef.balance.saturatingSubtract(maxTxFees)
                 } else {
-                    balance = balanceRef.getBalance()
+                    balance = balanceRef.balance
                 }
             }
 
-            capacities.append(self.accountBalanceToAccountStorageCapacity(balance))
+            capacities.append(self.accountBalanceToAccountStorageCapacity(balance)) 
         }
         return capacities
     }
@@ -117,7 +117,7 @@ access(all) contract FlowStorageFees {
             return 0.0
         }
 
-        // return balance multiplied with megabytes per flow
+        // return balance multiplied with megabytes per flow 
         return self.flowToStorageCapacity(balance)
     }
 
@@ -157,7 +157,7 @@ access(all) contract FlowStorageFees {
         var balance = 0.0
 
         if let balanceRef = acct.capabilities.borrow<&FlowToken.Vault>(/public/flowTokenBalance) {
-            balance = balanceRef.getBalance()
+            balance = balanceRef.balance
         }
 
         // get how much should be reserved for storage

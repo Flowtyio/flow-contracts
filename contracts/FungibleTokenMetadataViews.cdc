@@ -4,21 +4,21 @@ import "ViewResolver"
 
 /// This contract implements the metadata standard proposed
 /// in FLIP-1087.
-///
+/// 
 /// Ref: https://github.com/onflow/flips/blob/main/application/20220811-fungible-tokens-metadata.md
-///
+/// 
 /// Structs and resources can implement one or more
 /// metadata types, called views. Each view type represents
 /// a different kind of metadata.
 ///
 access(all) contract FungibleTokenMetadataViews {
 
-    /// FTView wraps FTDisplay and FTVaultData, and is used to give a complete
-    /// picture of a Fungible Token. Most Fungible Token contracts should
+    /// FTView wraps FTDisplay and FTVaultData, and is used to give a complete 
+    /// picture of a Fungible Token. Most Fungible Token contracts should 
     /// implement this view.
     ///
     access(all) struct FTView {
-        access(all) let ftDisplay: FTDisplay?
+        access(all) let ftDisplay: FTDisplay?     
         access(all) let ftVaultData: FTVaultData?
         view init(
             ftDisplay: FTDisplay?,
@@ -45,8 +45,8 @@ access(all) contract FungibleTokenMetadataViews {
         )
     }
 
-    /// View to expose the information needed to showcase this FT.
-    /// This can be used by applications to give an overview and
+    /// View to expose the information needed to showcase this FT. 
+    /// This can be used by applications to give an overview and 
     /// graphics of the FT.
     ///
     access(all) struct FTDisplay {
@@ -94,7 +94,7 @@ access(all) contract FungibleTokenMetadataViews {
     }
 
     /// Helper to get FTDisplay in a way that will return a typed optional.
-    ///
+    /// 
     /// @param viewResolver: A reference to the resolver resource
     /// @return An optional FTDisplay struct
     ///
@@ -108,7 +108,7 @@ access(all) contract FungibleTokenMetadataViews {
     }
 
     /// View to expose the information needed store and interact with a FT vault.
-    /// This can be used by applications to setup a FT vault with proper
+    /// This can be used by applications to setup a FT vault with proper 
     /// storage and public capabilities.
     ///
     access(all) struct FTVaultData {
@@ -121,21 +121,13 @@ access(all) contract FungibleTokenMetadataViews {
         /// Public path which must be linked to expose the balance and resolver public capabilities.
         access(all) let metadataPath: PublicPath
 
-        /// Private path which should be linked to expose the provider capability to withdraw funds
-        /// from the vault.
-        access(all) let providerPath: PrivatePath
-
-        /// Type that should be linked at the `receiverPath`. This is a restricted type requiring
+        /// Type that should be linked at the `receiverPath`. This is a restricted type requiring 
         /// the `FungibleToken.Receiver` interface.
         access(all) let receiverLinkedType: Type
 
-        /// Type that should be linked at the `receiverPath`. This is a restricted type requiring
+        /// Type that should be linked at the `receiverPath`. This is a restricted type requiring 
         /// the `ViewResolver.Resolver` interfaces.
         access(all) let metadataLinkedType: Type
-
-        /// Type that should be linked at the aforementioned private path. This
-        /// is normally a restricted type with at a minimum the `FungibleToken.Provider` interface.
-        access(all) let providerLinkedType: Type
 
         /// Function that allows creation of an empty FT vault that is intended
         /// to store the funds.
@@ -145,24 +137,19 @@ access(all) contract FungibleTokenMetadataViews {
             storagePath: StoragePath,
             receiverPath: PublicPath,
             metadataPath: PublicPath,
-            providerPath: PrivatePath,
             receiverLinkedType: Type,
             metadataLinkedType: Type,
-            providerLinkedType: Type,
             createEmptyVaultFunction: fun(): @{FungibleToken.Vault}
         ) {
             pre {
                 receiverLinkedType.isSubtype(of: Type<&{FungibleToken.Receiver}>()): "Receiver public type must include FungibleToken.Receiver."
-                metadataLinkedType.isSubtype(of: Type<&{ViewResolver.Resolver}>()): "Metadata public type must include ViewResolver.Resolver interfaces."
-                providerLinkedType.isSubtype(of: Type<&{FungibleToken.Provider}>()): "Provider type must include FungibleToken.Provider interface."
+                metadataLinkedType.isSubtype(of: Type<&{FungibleToken.Vault}>()): "Metadata linked type must be a fungible token vault"
             }
             self.storagePath = storagePath
             self.receiverPath = receiverPath
             self.metadataPath = metadataPath
-            self.providerPath = providerPath
             self.receiverLinkedType = receiverLinkedType
             self.metadataLinkedType = metadataLinkedType
-            self.providerLinkedType = providerLinkedType
             self.createEmptyVault = createEmptyVaultFunction
         }
     }
@@ -190,3 +177,4 @@ access(all) contract FungibleTokenMetadataViews {
         }
     }
 }
+ 

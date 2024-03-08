@@ -110,10 +110,8 @@ access(all) contract ExampleNFT: ViewResolver {
                     return MetadataViews.NFTCollectionData(
                         storagePath: ExampleNFT.CollectionStoragePath,
                         publicPath: ExampleNFT.CollectionPublicPath,
-                        providerPath: /private/exampleNFTCollection,
                         publicCollection: Type<&ExampleNFT.Collection>(),
                         publicLinkedType: Type<&ExampleNFT.Collection>(),
-                        providerLinkedType: Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>(),
                         createEmptyCollectionFunction: (fun (): @{NonFungibleToken.Collection} {
                             return <-ExampleNFT.createEmptyCollection()
                         })

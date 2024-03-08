@@ -1,6 +1,7 @@
 {
   "networks": {
     "emulator": "127.0.0.1:3569",
+    "testing": "127.0.0.1:3569",
     "mainnet": "access.mainnet.nodes.onflow.org:9000",
     "sandboxnet": "access.sandboxnet.nodes.onflow.org:9000",
     "testnet": "access.devnet.nodes.onflow.org:9000"
@@ -22,6 +23,14 @@
   "contracts": {
     "NonFungibleToken": {
       "source": "./contracts/NonFungibleToken.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x631e88ae7f1d7c20",
+        "mainnet": "0x1d7e57aa55817448"
+      }
+    },
+    "Burner": {
+      "source": "./contracts/Burner.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x631e88ae7f1d7c20",
@@ -342,6 +351,7 @@
   "deployments": {
     "emulator": {
       "emulator-account": [
+        "Burner",
         "NonFungibleToken",
         "MetadataViews",
         "ViewResolver",
