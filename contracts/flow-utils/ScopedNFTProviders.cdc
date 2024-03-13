@@ -11,14 +11,14 @@ import "StringUtils"
 //
 // By using a scoped provider, only a subset of assets can be taken if the provider leaks
 // instead of the entire nft collection.
-pub contract ScopedNFTProviders {
-    pub struct interface NFTFilter {
-        pub fun canWithdraw(_ nft: &NonFungibleToken.NFT): Bool
-        pub fun markWithdrawn(_ nft: &NonFungibleToken.NFT)
-        pub fun getDetails(): {String: AnyStruct}
+access(all) contract ScopedNFTProviders {
+    access(all) struct interface NFTFilter {
+        access(all) fun canWithdraw(_ nft: &{NonFungibleToken.NFT}): Bool
+        access(NonFungibleToken.Withdraw) fun markWithdrawn(_ nft: &{NonFungibleToken.NFT})
+        access(all) fun getDetails(): {String: AnyStruct}
     }
 
-    pub struct NFTIDFilter: NFTFilter {
+    access(all) struct NFTIDFilter: NFTFilter {
         // the ids that are allowed to be withdrawn.
         // If ids[num] is false, the id cannot be withdrawn anymore
         access(self) let ids: {UInt64: Bool}
@@ -31,22 +31,22 @@ pub contract ScopedNFTProviders {
             self.ids = d
         }
 
-        pub fun canWithdraw(_ nft: &NonFungibleToken.NFT): Bool {
-            return self.ids[nft.id] != nil && self.ids[nft.id] == true
+        access(all) fun canWithdraw(_ nft: &{NonFungibleToken.NFT}): Bool {
+            return self.ids[nft.getID()] != nil && self.ids[nft.getID()] == true
         }
 
-        pub fun markWithdrawn(_ nft: &NonFungibleToken.NFT) {
-            self.ids[nft.id] = false
+        access(NonFungibleToken.Withdraw) fun markWithdrawn(_ nft: &{NonFungibleToken.NFT}) {
+            self.ids[nft.getID()] = false
         }
 
-        pub fun getDetails(): {String: AnyStruct} {
+        access(all) fun getDetails(): {String: AnyStruct} {
             return {
                 "ids": self.ids
             }
         }
     }
 
-    pub struct UUIDFilter: NFTFilter {
+    access(all) struct UUIDFilter: NFTFilter {
         // the ids that are allowed to be withdrawn.
         // If ids[num] is false, the id cannot be withdrawn anymore
         access(self) let uuids: {UInt64: Bool}
@@ -59,15 +59,15 @@ pub contract ScopedNFTProviders {
             self.uuids = d
         }
 
-        pub fun canWithdraw(_ nft: &NonFungibleToken.NFT): Bool {
+        access(all) fun canWithdraw(_ nft: &{NonFungibleToken.NFT}): Bool {
             return self.uuids[nft.uuid] != nil && self.uuids[nft.uuid]! == true
         }
 
-        pub fun markWithdrawn(_ nft: &NonFungibleToken.NFT) {
+        access(NonFungibleToken.Withdraw) fun markWithdrawn(_ nft: &{NonFungibleToken.NFT}) {
             self.uuids[nft.uuid] = false
         }
 
-        pub fun getDetails(): {String: AnyStruct} {
+        access(all) fun getDetails(): {String: AnyStruct} {
             return {
                 "uuids": self.uuids
             }
@@ -77,39 +77,39 @@ pub contract ScopedNFTProviders {
     // ScopedNFTProvider
     //
     // Wrapper around an NFT Provider that is restricted to specific ids.
-    pub resource ScopedNFTProvider: NonFungibleToken.Provider {
-        access(self) let provider: Capability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
+    access(all) resource ScopedNFTProvider: NonFungibleToken.Provider {
+        access(self) let provider: Capability<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>
         access(self) let filters: [{NFTFilter}]
 
         // block timestamp that this provider can no longer be used after
         access(self) let expiration: UFix64?
 
-         pub fun isExpired(): Bool {
+         access(all) view fun isExpired(): Bool {
             if let expiration = self.expiration {
                 return getCurrentBlock().timestamp >= expiration
             }
             return false
         }
 
-        pub init(provider: Capability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>, filters: [{NFTFilter}], expiration: UFix64?) {
+        access(all) init(provider: Capability<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>, filters: [{NFTFilter}], expiration: UFix64?) {
             self.provider = provider
             self.expiration = expiration
             self.filters = filters
         }
 
-        pub fun canWithdraw(_ id: UInt64): Bool {
+        access(all) fun canWithdraw(_ id: UInt64): Bool {
             if self.isExpired() {
                 return false
             }
 
-            let nft = self.provider.borrow()!.borrowNFT(id: id)
+            let nft = self.provider.borrow()!.borrowNFT(id)
             if nft == nil {
                 return false
             }
 
             var i = 0
             while i < self.filters.length {
-                if !self.filters[i].canWithdraw(nft) {
+                if !self.filters[i].canWithdraw(nft!) {
                     return false
                 }
                 i = i + 1
@@ -117,17 +117,17 @@ pub contract ScopedNFTProviders {
             return true
         }
 
-        pub fun check(): Bool {
+        access(all) fun check(): Bool {
             return self.provider.check()
         }
 
-        pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
+        access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             pre {
                 !self.isExpired(): "provider has expired"
             }
 
             let nft <- self.provider.borrow()!.withdraw(withdrawID: withdrawID)
-            let ref = &nft as &NonFungibleToken.NFT
+            let ref = &nft as &{NonFungibleToken.NFT}
 
             var i = 0
             while i < self.filters.length {
@@ -142,7 +142,7 @@ pub contract ScopedNFTProviders {
             return <-nft
         }
 
-        pub fun getDetails(): [{String: AnyStruct}] {
+        access(all) fun getDetails(): [{String: AnyStruct}] {
             let details: [{String: AnyStruct}] = []
             for f in self.filters {
                 details.append(f.getDetails())
@@ -152,8 +152,8 @@ pub contract ScopedNFTProviders {
         }
     }
 
-    pub fun createScopedNFTProvider(
-        provider: Capability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>,
+    access(all) fun createScopedNFTProvider(
+        provider: Capability<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>,
         filters: [{NFTFilter}],
         expiration: UFix64?
     ): @ScopedNFTProvider {
