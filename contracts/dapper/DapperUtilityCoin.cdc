@@ -1,30 +1,32 @@
 import "FungibleToken"
+import "MetadataViews"
+import "FungibleTokenMetadataViews"
 
-pub contract DapperUtilityCoin: FungibleToken {
+access(all) contract DapperUtilityCoin: FungibleToken {
 
     // Total supply of DapperUtilityCoins in existence
-    pub var totalSupply: UFix64
+    access(all) var totalSupply: UFix64
 
     // Event that is emitted when the contract is created
-    pub event TokensInitialized(initialSupply: UFix64)
+    access(all) event TokensInitialized(initialSupply: UFix64)
 
     // Event that is emitted when tokens are withdrawn from a Vault
-    pub event TokensWithdrawn(amount: UFix64, from: Address?)
+    access(all) event TokensWithdrawn(amount: UFix64, from: Address?)
 
     // Event that is emitted when tokens are deposited to a Vault
-    pub event TokensDeposited(amount: UFix64, to: Address?)
+    access(all) event TokensDeposited(amount: UFix64, to: Address?)
 
     // Event that is emitted when new tokens are minted
-    pub event TokensMinted(amount: UFix64)
+    access(all) event TokensMinted(amount: UFix64)
 
     // Event that is emitted when tokens are destroyed
-    pub event TokensBurned(amount: UFix64)
+    access(all) event TokensBurned(amount: UFix64)
 
     // Event that is emitted when a new minter resource is created
-    pub event MinterCreated(allowedAmount: UFix64)
+    access(all) event MinterCreated(allowedAmount: UFix64)
 
     // Event that is emitted when a new burner resource is created
-    pub event BurnerCreated()
+    access(all) event BurnerCreated()
 
     // Vault
     //
@@ -38,10 +40,10 @@ pub contract DapperUtilityCoin: FungibleToken {
     // out of thin air. A special Minter resource needs to be defined to mint
     // new tokens.
     //
-    pub resource Vault: FungibleToken.Provider, FungibleToken.Receiver, FungibleToken.Balance {
+    access(all) resource Vault: FungibleToken.Vault {
 
         // holds the balance of a users tokens
-        pub var balance: UFix64
+        access(all) var balance: UFix64
 
         // initialize the balance at resource creation time
         init(balance: UFix64) {
@@ -57,7 +59,7 @@ pub contract DapperUtilityCoin: FungibleToken {
         // created Vault to the context that called so it can be deposited
         // elsewhere.
         //
-        pub fun withdraw(amount: UFix64): @FungibleToken.Vault {
+        access(FungibleToken.Withdraw) fun withdraw(amount: UFix64): @{FungibleToken.Vault} {
             self.balance = self.balance - amount
             emit TokensWithdrawn(amount: amount, from: self.owner?.address)
             return <-create Vault(balance: amount)
@@ -70,7 +72,7 @@ pub contract DapperUtilityCoin: FungibleToken {
         // It is allowed to destroy the sent Vault because the Vault
         // was a temporary holder of the tokens. The Vault's balance has
         // been consumed and therefore can be destroyed.
-        pub fun deposit(from: @FungibleToken.Vault) {
+        access(all) fun deposit(from: @{FungibleToken.Vault}) {
             let vault <- from as! @DapperUtilityCoin.Vault
             self.balance = self.balance + vault.balance
             emit TokensDeposited(amount: vault.balance, to: self.owner?.address)
@@ -78,8 +80,32 @@ pub contract DapperUtilityCoin: FungibleToken {
             destroy vault
         }
 
-        destroy() {
+        access(all) view fun isAvailableToWithdraw(amount: UFix64): Bool {
+            return self.balance >= amount
+        }
+
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
+            return {Type<@Vault>(): true}
+        }
+
+        access(all) view fun isSupportedVaultType(type: Type): Bool {
+            return type == Type<@Vault>()
+        }
+
+        access(contract) fun burnCallback() {
             DapperUtilityCoin.totalSupply = DapperUtilityCoin.totalSupply - self.balance
+        }
+
+        access(all) fun createEmptyVault(): @{FungibleToken.Vault} {
+            return <- create Vault(balance: 0.0)
+        }
+
+        access(all) view fun getViews(): [Type]{
+            return DapperUtilityCoin.getContractViews(resourceType: nil)
+        }
+
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
+            return DapperUtilityCoin.resolveContractView(resourceType: nil, viewType: view)
         }
     }
 
@@ -90,16 +116,16 @@ pub contract DapperUtilityCoin: FungibleToken {
     // and store the returned Vault in their storage in order to allow their
     // account to be able to receive deposits of this token type.
     //
-    pub fun createEmptyVault(): @FungibleToken.Vault {
+    access(all) fun createEmptyVault(vaultType: Type): @{FungibleToken.Vault} {
         return <-create Vault(balance: 0.0)
     }
 
-    pub resource Administrator {
+    access(all) resource Administrator {
         // createNewMinter
         //
         // Function that creates and returns a new minter resource
         //
-        pub fun createNewMinter(allowedAmount: UFix64): @Minter {
+        access(all) fun createNewMinter(allowedAmount: UFix64): @Minter {
             emit MinterCreated(allowedAmount: allowedAmount)
             return <-create Minter(allowedAmount: allowedAmount)
         }
@@ -108,7 +134,7 @@ pub contract DapperUtilityCoin: FungibleToken {
         //
         // Function that creates and returns a new burner resource
         //
-        pub fun createNewBurner(): @Burner {
+        access(all) fun createNewBurner(): @Burner {
             emit BurnerCreated()
             return <-create Burner()
         }
@@ -118,19 +144,19 @@ pub contract DapperUtilityCoin: FungibleToken {
     //
     // Resource object that token admin accounts can hold to mint new tokens.
     //
-    pub resource Minter {
+    access(all) resource Minter {
 
         // the amount of tokens that the minter is allowed to mint
-        pub var allowedAmount: UFix64
+        access(all) var allowedAmount: UFix64
 
         // mintTokens
         //
         // Function that mints new tokens, adds them to the total supply,
         // and returns them to the calling context.
         //
-        pub fun mintTokens(amount: UFix64): @DapperUtilityCoin.Vault {
+        access(all) fun mintTokens(amount: UFix64): @DapperUtilityCoin.Vault {
             pre {
-                amount > UFix64(0): "Amount minted must be greater than zero"
+                amount > 0.0: "Amount minted must be greater than zero"
                 amount <= self.allowedAmount: "Amount minted must be less than the allowed amount"
             }
             DapperUtilityCoin.totalSupply = DapperUtilityCoin.totalSupply + amount
@@ -148,7 +174,7 @@ pub contract DapperUtilityCoin: FungibleToken {
     //
     // Resource object that token admin accounts can hold to burn tokens.
     //
-    pub resource Burner {
+    access(all) resource Burner {
 
         // burnTokens
         //
@@ -157,12 +183,63 @@ pub contract DapperUtilityCoin: FungibleToken {
         // Note: the burned tokens are automatically subtracted from the
         // total supply in the Vault destructor.
         //
-        pub fun burnTokens(from: @FungibleToken.Vault) {
+        access(all) fun burnTokens(from: @{FungibleToken.Vault}) {
             let vault <- from as! @DapperUtilityCoin.Vault
             let amount = vault.balance
             destroy vault
             emit TokensBurned(amount: amount)
         }
+    }
+
+    access(all) view fun getContractViews(resourceType: Type?): [Type] {
+        return [Type<FungibleTokenMetadataViews.FTView>(),
+                Type<FungibleTokenMetadataViews.FTDisplay>(),
+                Type<FungibleTokenMetadataViews.FTVaultData>(),
+                Type<FungibleTokenMetadataViews.TotalSupply>()]
+    }
+
+    access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
+        switch viewType {
+            case Type<FungibleTokenMetadataViews.FTView>():
+                return FungibleTokenMetadataViews.FTView(
+                    ftDisplay: self.resolveContractView(resourceType: nil, viewType: Type<FungibleTokenMetadataViews.FTDisplay>()) as! FungibleTokenMetadataViews.FTDisplay?,
+                    ftVaultData: self.resolveContractView(resourceType: nil, viewType: Type<FungibleTokenMetadataViews.FTVaultData>()) as! FungibleTokenMetadataViews.FTVaultData?
+                )
+            case Type<FungibleTokenMetadataViews.FTDisplay>():
+                let media = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                        url: "https://meetdapper.com/"
+                    ),
+                    mediaType: "image/svg+xml"
+                )
+                let medias = MetadataViews.Medias([media])
+                return FungibleTokenMetadataViews.FTDisplay(
+                    name: "Dapper Utility Coin",
+                    symbol: "DUC",
+                    description: "",
+                    externalURL: MetadataViews.ExternalURL("https://meetdapper.com/"),
+                    logos: medias,
+                    socials: {
+                        "twitter": MetadataViews.ExternalURL("https://twitter.com/hellodapper")
+                    }
+                )
+            case Type<FungibleTokenMetadataViews.FTVaultData>():
+                let vaultRef = DapperUtilityCoin.account.storage.borrow<auth(FungibleToken.Withdraw) &DapperUtilityCoin.Vault>(from: /storage/dapperUtilityCoinVault)
+			        ?? panic("Could not borrow reference to the contract's Vault!")
+                return FungibleTokenMetadataViews.FTVaultData(
+                    storagePath: /storage/dapperUtilityCoinVault,
+                    receiverPath: /public/exampleTokenReceiver,
+                    metadataPath: /public/dapperUtilityCoinBalance,
+                    receiverLinkedType: Type<&{FungibleToken.Receiver, FungibleToken.Vault}>(),
+                    metadataLinkedType: Type<&{FungibleToken.Balance, FungibleToken.Vault}>(),
+                    createEmptyVaultFunction: (fun (): @{FungibleToken.Vault} {
+                        return <-vaultRef.createEmptyVault()
+                    })
+                )
+            case Type<FungibleTokenMetadataViews.TotalSupply>():
+                return FungibleTokenMetadataViews.TotalSupply(totalSupply: DapperUtilityCoin.totalSupply)
+        }
+        return nil
     }
 
     init() {
@@ -172,26 +249,16 @@ pub contract DapperUtilityCoin: FungibleToken {
 
         let admin <- create Administrator()
         let minter <- admin.createNewMinter(allowedAmount: self.totalSupply)
-        self.account.save(<-admin, to: /storage/dapperUtilityCoinAdmin)
+        self.account.storage.save(<-admin, to: /storage/dapperUtilityCoinAdmin)
 
         // mint tokens
         let tokenVault <- minter.mintTokens(amount: self.totalSupply)
-        self.account.save(<-tokenVault, to: /storage/dapperUtilityCoinVault)
+        self.account.storage.save(<-tokenVault, to: /storage/dapperUtilityCoinVault)
         destroy minter
 
-        // Create a public capability to the stored Vault that only exposes
-        // the balance field through the Balance interface
-        self.account.link<&DapperUtilityCoin.Vault{FungibleToken.Balance}>(
-            /public/dapperUtilityCoinBalance,
-            target: /storage/dapperUtilityCoinVault
-        )
-
-        // Create a public capability to the stored Vault that only exposes
-        // the deposit method through the Receiver interface
-        self.account.link<&{FungibleToken.Receiver}>(
-            /public/dapperUtilityCoinReceiver,
-            target: /storage/dapperUtilityCoinVault
-        )
+        let cap = self.account.capabilities.storage.issue<&DapperUtilityCoin.Vault>(/storage/dapperUtilityCoinVault)
+        self.account.capabilities.publish(cap, at: /public/dapperUtilityCoinBalance)
+        self.account.capabilities.publish(cap, at: /public/dapperUtilityCoinReceiver)
 
         // Emit an event that shows that the contract was initialized
         emit TokensInitialized(initialSupply: self.totalSupply)
