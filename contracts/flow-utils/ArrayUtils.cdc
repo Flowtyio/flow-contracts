@@ -1,120 +1,68 @@
-import "FungibleToken"
-import "StringUtils"
+// Copied from https://github.com/bluesign/flow-utils/blob/dnz/cadence/contracts/ArrayUtils.cdc with minor adjustments
 
-// ScopedFTProviders
-//
-// TO AVOID RISK, PLEASE DEPLOY YOUR OWN VERSION OF THIS CONTRACT SO THAT
-// MALICIOUS UPDATES ARE NOT POSSIBLE
-//
-// ScopedProviders are meant to solve the issue of unbounded access FungibleToken vaults
-// when a provider is called for.
-access(all) contract ScopedFTProviders {
-    access(all) struct interface FTFilter {
-        access(all) fun canWithdrawAmount(_ amount: UFix64): Bool
-        access(FungibleToken.Withdraw) fun markAmountWithdrawn(_ amount: UFix64)
-        access(all) fun getDetails(): {String: AnyStruct}
-    }
-
-    access(all) struct AllowanceFilter: FTFilter {
-        access(self) let allowance: UFix64
-        access(self) var allowanceUsed: UFix64
-
-        init(_ allowance: UFix64) {
-            self.allowance = allowance
-            self.allowanceUsed = 0.0
-        }
-
-        access(all) fun canWithdrawAmount(_ amount: UFix64): Bool {
-            return amount + self.allowanceUsed <= self.allowance
-        }
-
-        access(FungibleToken.Withdraw) fun markAmountWithdrawn(_ amount: UFix64) {
-            self.allowanceUsed = self.allowanceUsed + amount
-        }
-
-        access(all) fun getDetails(): {String: AnyStruct} {
-            return {
-                "allowance": self.allowance,
-                "allowanceUsed": self.allowanceUsed
-            }
+access(all) contract ArrayUtils {
+    access(all) fun rangeFunc(_ start: Int, _ end: Int, _ f: fun (Int): Void) {
+        var current = start
+        while current < end {
+            f(current)
+            current = current + 1
         }
     }
 
-    // ScopedFTProvider
-    //
-    // A ScopedFTProvider is a wrapped FungibleTokenProvider with
-    // filters that can be defined by anyone using the ScopedFTProvider.
-    access(all) resource ScopedFTProvider: FungibleToken.Provider {
-        access(self) let provider: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider}>
-        access(self) var filters: [{FTFilter}]
+    access(all) fun range(_ start: Int, _ end: Int): [Int] {
+        var res: [Int] = []
+        self.rangeFunc(start, end, fun (i: Int) {
+            res.append(i)
+        })
+        return res
+    }
 
-        // block timestamp that this provider can no longer be used after
-        access(self) let expiration: UFix64?
-
-        access(all) init(provider: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider}>, filters: [{FTFilter}], expiration: UFix64?) {
-            self.provider = provider
-            self.filters = filters
-            self.expiration = expiration
+    access(all) fun reverse(_ array: [Int]): [Int] {
+        var res: [Int] = []
+        var i: Int = array.length - 1
+        while i >= 0 {
+            res.append(array[i])
+            i = i - 1
         }
+        return res
+    }
 
-        access(all) fun check(): Bool {
-            return self.provider.check()
-        }
-
-        access(all) view fun isExpired(): Bool {
-            if let expiration = self.expiration {
-                return getCurrentBlock().timestamp >= expiration
-            }
-            return false
-        }
-
-        access(all) fun canWithdraw(_ amount: UFix64): Bool {
-            if self.isExpired() {
-                return false
-            }
-
-            for filter in self.filters {
-                if !filter.canWithdrawAmount(amount) {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        access(FungibleToken.Withdraw) fun withdraw(amount: UFix64): @{FungibleToken.Vault} {
-            pre {
-                !self.isExpired(): "provider has expired"
-            }
-
-            var i = 0
-            while i < self.filters.length {
-                if !self.filters[i].canWithdrawAmount(amount) {
-                    panic(StringUtils.join(["cannot withdraw tokens. filter of type", self.filters[i].getType().identifier, "failed."], " "))
-                }
-
-                self.filters[i].markAmountWithdrawn(amount)
-                i = i + 1
-            }
-
-            return <-self.provider.borrow()!.withdraw(amount: amount)
-        }
-
-        access(all) fun getDetails(): [{String: AnyStruct}] {
-            let details: [{String: AnyStruct}] = []
-            for filter in self.filters {
-                details.append(filter.getDetails())
-            }
-
-            return details
+    access(all) fun transform(_ array: auth(Mutate) &[AnyStruct], _ f : fun (&AnyStruct, auth(Mutate) &[AnyStruct], Int)){
+        for i in self.range(0, array.length){
+            f(array[i], array, i)
         }
     }
 
-    access(all) fun createScopedFTProvider(
-        provider: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider}>,
-        filters: [{FTFilter}],
-        expiration: UFix64?
-    ): @ScopedFTProvider {
-        return <- create ScopedFTProvider(provider: provider, filters: filters, expiration: expiration)
+    access(all) fun iterate(_ array: [AnyStruct], _ f : fun (AnyStruct): Bool) {
+        for item in array{
+            if !f(item){
+                break
+            }
+        }
     }
+
+    access(all) fun map(_ array: [AnyStruct], _ f : fun (AnyStruct): AnyStruct) : [AnyStruct] {
+        var res : [AnyStruct] = []
+        for item in array{
+            res.append(f(item))
+        }
+        return res
+    }
+
+    access(all) fun mapStrings(_ array: [String], _ f: fun (String) : String) : [String] {
+        var res : [String] = []
+        for item in array{
+            res.append(f(item))
+        }
+        return res
+    }
+
+    access(all) fun reduce(_ array: [AnyStruct], _ initial: AnyStruct, _ f : fun (AnyStruct, AnyStruct): AnyStruct) : AnyStruct{
+        var res: AnyStruct = f(initial, array[0])
+        for i in self.range(1, array.length){
+            res =  f(res, array[i])
+        }
+        return res
+    }
+
 }

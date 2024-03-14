@@ -32,11 +32,11 @@ access(all) contract ScopedNFTProviders {
         }
 
         access(all) fun canWithdraw(_ nft: &{NonFungibleToken.NFT}): Bool {
-            return self.ids[nft.getID()] != nil && self.ids[nft.getID()] == true
+            return self.ids[nft.id] != nil && self.ids[nft.id] == true
         }
 
         access(NonFungibleToken.Withdraw) fun markWithdrawn(_ nft: &{NonFungibleToken.NFT}) {
-            self.ids[nft.getID()] = false
+            self.ids[nft.id] = false
         }
 
         access(all) fun getDetails(): {String: AnyStruct} {
@@ -121,7 +121,7 @@ access(all) contract ScopedNFTProviders {
             return self.provider.check()
         }
 
-        access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdraw | NonFungibleToken.Owner) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             pre {
                 !self.isExpired(): "provider has expired"
             }
@@ -160,3 +160,4 @@ access(all) contract ScopedNFTProviders {
         return <- create ScopedNFTProvider(provider: provider, filters: filters, expiration: expiration)
     }
 }
+
