@@ -16,29 +16,37 @@ their tokens to.
 
 import "FungibleToken"
 
-pub contract TokenForwarding {
+access(all) contract TokenForwarding {
 
     // Event that is emitted when tokens are deposited to the target receiver
-    pub event ForwardedDeposit(amount: UFix64, from: Address?)
+    access(all) event ForwardedDeposit(amount: UFix64, from: Address?)
 
-    pub resource interface ForwarderPublic {
-        pub fun check(): Bool
-        pub fun safeBorrow(): &{FungibleToken.Receiver}?
+    access(all) resource interface ForwarderPublic {
+        access(all) fun check(): Bool
+        access(all) fun safeBorrow(): &{FungibleToken.Receiver}?
     }
 
-    pub resource Forwarder: FungibleToken.Receiver, ForwarderPublic {
+    access(all) resource Forwarder: FungibleToken.Receiver, ForwarderPublic {
 
         // This is where the deposited tokens will be sent.
         // The type indicates that it is a reference to a receiver
         //
         access(self) var recipient: Capability
 
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
+            return {}
+        }
+
+        access(all) view fun isSupportedVaultType(type: Type): Bool {
+            return true
+        }
+
         // deposit
         //
         // Function that takes a Vault object as an argument and forwards
         // it to the recipient's Vault using the stored reference
         //
-        pub fun deposit(from: @FungibleToken.Vault) {
+        access(all) fun deposit(from: @{FungibleToken.Vault}) {
             let receiverRef = self.recipient.borrow<&{FungibleToken.Receiver}>()!
 
             let balance = from.balance
@@ -48,17 +56,17 @@ pub contract TokenForwarding {
             emit ForwardedDeposit(amount: balance, from: self.owner?.address)
         }
 
-        pub fun check(): Bool {
+        access(all) fun check(): Bool {
             return self.recipient.check<&{FungibleToken.Receiver}>()
         }
 
-        pub fun safeBorrow(): &{FungibleToken.Receiver}? {
+        access(all) fun safeBorrow(): &{FungibleToken.Receiver}? {
             return self.recipient.borrow<&{FungibleToken.Receiver}>()
         }
 
         // changeRecipient changes the recipient of the forwarder to the provided recipient
         //
-        pub fun changeRecipient(_ newRecipient: Capability) {
+        access(all) fun changeRecipient(_ newRecipient: Capability) {
             pre {
                 newRecipient.borrow<&{FungibleToken.Receiver}>() != nil: "Could not borrow Receiver reference from the Capability"
             }
@@ -75,7 +83,7 @@ pub contract TokenForwarding {
 
     // createNewForwarder creates a new Forwarder reference with the provided recipient
     //
-    pub fun createNewForwarder(recipient: Capability): @Forwarder {
+    access(all) fun createNewForwarder(recipient: Capability): @Forwarder {
         return <-create Forwarder(recipient: recipient)
     }
 }
