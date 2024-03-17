@@ -1,6 +1,6 @@
 {
     "name": "@flowtyio/flow-contracts",
-    "version": "0.1.0-beta.9",
+    "version": "0.1.0-beta.10",
     "main": "index.json",
     "description": "An NPM package for common flow contracts",
     "author": "flowtyio",
