@@ -3,6 +3,7 @@ import "NonFungibleToken"
 import "DapperUtilityCoin"
 import "MetadataViews"
 import "Resolver"
+import "ViewResolver"
 
 // OffersV2
 //
@@ -17,12 +18,12 @@ import "Resolver"
 // Marketplaces and other aggregators can watch for OfferAvailable events
 // and list offers of interest to logged in users.
 //
-pub contract OffersV2 {
+access(all) contract OffersV2 {
     // OfferAvailable
     // An Offer has been created and added to the users DapperOffer resource.
     //
 
-    pub event OfferAvailable(
+    access(all) event OfferAvailable(
         offerAddress: Address,
         offerId: UInt64,
         nftType: Type,
@@ -39,7 +40,7 @@ pub contract OffersV2 {
     // The Offer has been resolved. The offer has either been accepted
     //  by the NFT owner, or the offer has been removed and destroyed.
     //
-    pub event OfferCompleted(
+    access(all) event OfferCompleted(
         purchased: Bool,
         acceptingAddress: Address?,
         offerAddress: Address,
@@ -59,9 +60,9 @@ pub contract OffersV2 {
     // A struct representing a recipient that must be sent a certain amount
     // of the payment when a NFT is sold.
     //
-    pub struct Royalty {
-        pub let receiver: Capability<&{FungibleToken.Receiver}>
-        pub let amount: UFix64
+    access(all) struct Royalty {
+        access(all) let receiver: Capability<&{FungibleToken.Receiver}>
+        access(all) let amount: UFix64
 
         init(receiver: Capability<&{FungibleToken.Receiver}>, amount: UFix64) {
             self.receiver = receiver
@@ -72,23 +73,23 @@ pub contract OffersV2 {
     // OfferDetails
     // A struct containing Offers' data.
     //
-    pub struct OfferDetails {
+    access(all) struct OfferDetails {
         // The ID of the offer
-        pub let offerId: UInt64
+        access(all) let offerId: UInt64
         // The Type of the NFT
-        pub let nftType: Type
+        access(all) let nftType: Type
         // The Type of the FungibleToken that payments must be made in.
-        pub let paymentVaultType: Type
+        access(all) let paymentVaultType: Type
         // The Offer amount for the NFT
-        pub let offerAmount: UFix64
+        access(all) let offerAmount: UFix64
         // Flag to tracked the purchase state
-        pub var purchased: Bool
+        access(all) var purchased: Bool
         // This specifies the division of payment between recipients.
-        pub let royalties: [Royalty]
+        access(all) let royalties: [Royalty]
         // Used to hold Offer metadata and offer type information
-        pub let offerParamsString: {String: String}
-        pub let offerParamsUFix64: {String:UFix64}
-        pub let offerParamsUInt64: {String:UInt64}
+        access(all) let offerParamsString: {String: String}
+        access(all) let offerParamsUFix64: {String:UFix64}
+        access(all) let offerParamsUInt64: {String:UInt64}
 
         // setToPurchased
         // Irreversibly set this offer as purchased.
@@ -124,33 +125,33 @@ pub contract OffersV2 {
     // OfferPublic
     // An interface providing a useful public interface to an Offer resource.
     //
-    pub resource interface OfferPublic {
+    access(all) resource interface OfferPublic {
         // accept
         // This will accept the offer if provided with the NFT id that matches the Offer
         //
-        pub fun accept(
-            item: @AnyResource{NonFungibleToken.INFT, MetadataViews.Resolver},
+        access(all) fun accept(
+            item: @{NonFungibleToken.INFT, ViewResolver.Resolver},
             receiverCapability: Capability<&{FungibleToken.Receiver}>,
         ): Void
         // getDetails
         // Return Offer details
         //
-        pub fun getDetails(): OfferDetails
+        access(all) fun getDetails(): OfferDetails
     }
 
 
-    pub resource Offer: OfferPublic {
+    access(all) resource Offer: OfferPublic {
         // The OfferDetails struct of the Offer
         access(self) let details: OfferDetails
         // The vault which will handle the payment if the Offer is accepted.
-        access(contract) let vaultRefCapability: Capability<&{FungibleToken.Provider, FungibleToken.Balance}>
+        access(contract) let vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider, FungibleToken.Balance}>
         // Receiver address for the NFT when/if the Offer is accepted.
         access(contract) let nftReceiverCapability: Capability<&{NonFungibleToken.CollectionPublic}>
         // Resolver capability for the offer type
         access(contract) let resolverCapability: Capability<&{Resolver.ResolverPublic}>
 
         init(
-            vaultRefCapability: Capability<&{FungibleToken.Provider, FungibleToken.Balance}>,
+            vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider, FungibleToken.Balance}>,
             nftReceiverCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
             nftType: Type,
             amount: UFix64,
@@ -208,8 +209,8 @@ pub contract OffersV2 {
         // - Provided with a NFT matching the NFT id within the Offer details.
         // - Provided with a NFT matching the NFT Type within the Offer details.
         //
-        pub fun accept(
-                item: @AnyResource{NonFungibleToken.INFT, MetadataViews.Resolver},
+        access(all) fun accept(
+                item: @{NonFungibleToken.INFT, ViewResolver.Resolver},
                 receiverCapability: Capability<&{FungibleToken.Receiver}>,
             ): Void {
 
@@ -220,7 +221,7 @@ pub contract OffersV2 {
 
             let resolverCapability = self.resolverCapability.borrow() ?? panic("could not borrow resolver")
             let resolverResult = resolverCapability.checkOfferResolver(
-                item: &item as &AnyResource{NonFungibleToken.INFT, MetadataViews.Resolver},
+                item: &item as &{NonFungibleToken.INFT, ViewResolver.Resolver},
                 offerParamsString: self.details.offerParamsString,
                 offerParamsUInt64: self.details.offerParamsUInt64,
                 offerParamsUFix64: self.details.offerParamsUFix64,
@@ -231,7 +232,7 @@ pub contract OffersV2 {
             }
 
             self.details.setToPurchased()
-            let nft <- item as! @NonFungibleToken.NFT
+            let nft <- item as! @{NonFungibleToken.NFT}
             let nftId: UInt64 = nft.id
             self.nftReceiverCapability.borrow()!.deposit(token: <- nft)
 
@@ -251,7 +252,7 @@ pub contract OffersV2 {
 
             // If a DUC vault is being used for payment we must assert that no DUC is leaking from the transactions.
             let isDucVault = self.vaultRefCapability.isInstance(
-                Type<Capability<&DapperUtilityCoin.Vault{FungibleToken.Provider, FungibleToken.Balance}>>()
+                Type<Capability<&{FungibleToken.Provider, FungibleToken.Balance}>>()
             )
 
             if isDucVault {
@@ -278,14 +279,14 @@ pub contract OffersV2 {
         // getDetails
         // Return Offer details
         //
-        pub fun getDetails(): OfferDetails {
+        access(all) fun getDetails(): OfferDetails {
             return self.details
         }
 
         // getRoyaltyInfo
         // Return royalty details
         //
-        pub fun getRoyaltyInfo(): {Address:UFix64} {
+        access(all) fun getRoyaltyInfo(): {Address:UFix64} {
             let royaltyInfo: {Address:UFix64} = {}
 
             for royalty in self.details.royalties {
@@ -294,30 +295,30 @@ pub contract OffersV2 {
             return royaltyInfo;
         }
 
-        destroy() {
-            if !self.details.purchased {
-                emit OfferCompleted(
-                    purchased: self.details.purchased,
-                    acceptingAddress: nil,
-                    offerAddress: self.nftReceiverCapability.address,
-                    offerId: self.details.offerId,
-                    nftType: self.details.nftType,
-                    offerAmount: self.details.offerAmount,
-                    royalties: self.getRoyaltyInfo(),
-                    offerType: self.details.offerParamsString["_type"] ?? "unknown",
-                    offerParamsString: self.details.offerParamsString,
-                    offerParamsUFix64: self.details.offerParamsUFix64,
-                    offerParamsUInt64: self.details.offerParamsUInt64,
-                    paymentVaultType: self.details.paymentVaultType,
-                    nftId: nil,
-                )
-            }
-        }
+        // destroy() {
+        //     if !self.details.purchased {
+        //         emit OfferCompleted(
+        //             purchased: self.details.purchased,
+        //             acceptingAddress: nil,
+        //             offerAddress: self.nftReceiverCapability.address,
+        //             offerId: self.details.offerId,
+        //             nftType: self.details.nftType,
+        //             offerAmount: self.details.offerAmount,
+        //             royalties: self.getRoyaltyInfo(),
+        //             offerType: self.details.offerParamsString["_type"] ?? "unknown",
+        //             offerParamsString: self.details.offerParamsString,
+        //             offerParamsUFix64: self.details.offerParamsUFix64,
+        //             offerParamsUInt64: self.details.offerParamsUInt64,
+        //             paymentVaultType: self.details.paymentVaultType,
+        //             nftId: nil,
+        //         )
+        //     }
+        // }
     }
 
     // makeOffer
-    pub fun makeOffer(
-        vaultRefCapability: Capability<&{FungibleToken.Provider, FungibleToken.Balance}>,
+    access(all) fun makeOffer(
+        vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider, FungibleToken.Balance}>,
         nftReceiverCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
         nftType: Type,
         amount: UFix64,

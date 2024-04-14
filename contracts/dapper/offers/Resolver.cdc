@@ -1,20 +1,21 @@
 import "NonFungibleToken"
 import "MetadataViews"
+import "ViewResolver"
 import "TopShot"
 
-pub contract Resolver {
+access(all) contract Resolver {
     // Current list of supported resolution rules.
-    pub enum ResolverType: UInt8 {
-        pub case NFT
-        pub case TopShotEdition
-        pub case MetadataViewsEditions
+    access(all) enum ResolverType: UInt8 {
+        access(all) case NFT
+        access(all) case TopShotEdition
+        access(all) case MetadataViewsEditions
     }
 
     // Public resource interface that defines a method signature for checkOfferResolver
     // which is used within the Resolver resource for offer acceptance validation
-    pub resource interface ResolverPublic {
-        pub fun checkOfferResolver(
-         item: &AnyResource{NonFungibleToken.INFT, MetadataViews.Resolver},
+    access(all) resource interface ResolverPublic {
+        access(all) fun checkOfferResolver(
+         item: &{NonFungibleToken.INFT, ViewResolver.Resolver},
          offerParamsString: {String:String},
          offerParamsUInt64: {String:UInt64},
          offerParamsUFix64: {String:UFix64}): Bool
@@ -22,12 +23,12 @@ pub contract Resolver {
 
 
     // Resolver resource holds the Offer exchange resolution rules.
-    pub resource OfferResolver: ResolverPublic {
+    access(all) resource OfferResolver: ResolverPublic {
         // checkOfferResolver
         // Holds the validation rules for resolver each type of supported ResolverType
         // Function returns TRUE if the provided nft item passes the criteria for exchange
-        pub fun checkOfferResolver(
-         item: &AnyResource{NonFungibleToken.INFT, MetadataViews.Resolver},
+        access(all) fun checkOfferResolver(
+         item: &{NonFungibleToken.INFT, ViewResolver.Resolver},
          offerParamsString: {String:String},
          offerParamsUInt64: {String:UInt64},
          offerParamsUFix64: {String:UFix64}): Bool {
@@ -64,7 +65,7 @@ pub contract Resolver {
 
     }
 
-    pub fun createResolver(): @OfferResolver {
+    access(all) fun createResolver(): @OfferResolver {
         return <-create OfferResolver()
     }
 }
