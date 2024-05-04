@@ -27,7 +27,7 @@ echo "deployment complete!"
 
 sleep 3
 echo "cleaning up..."
-pkill -f flow
+pkill -f flow-c1
 rm flow.json
 
 exit 0

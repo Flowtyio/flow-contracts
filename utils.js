@@ -16,7 +16,6 @@ const getConfig = (path) => {
 }
 
 const getContractCode = (contractName) => {
-  console.log("get contract code for: ", contractName)
   const path = findFileInDirectory(`${__dirname}/contracts`, `${contractName}.cdc`)
   return fs.readFileSync(path, 'utf8')
 }
