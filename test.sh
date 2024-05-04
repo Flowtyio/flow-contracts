@@ -16,12 +16,12 @@ npx flow-contracts add-all --config "$configPath"
 
 echo "starting the flow emulator in 5 seconds..."
 sleep 5
-nohup flow emulator &
+nohup flow-c1 emulator &
 
 sleep 5
 
 echo "deploying contracts..."
-flow project deploy --update
+flow-c1 project deploy --update
 
 echo "deployment complete!"
 

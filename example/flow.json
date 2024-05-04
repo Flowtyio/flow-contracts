@@ -21,8 +21,17 @@
     }
   },
   "contracts": {
+    "Importer": "contracts/Importer.cdc",
+    "ViewResolver": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/ViewResolver.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x631e88ae7f1d7c20",
+        "mainnet": "0x1d7e57aa55817448"
+      }
+    },
     "NonFungibleToken": {
-      "source": "./contracts/NonFungibleToken.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/NonFungibleToken.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x631e88ae7f1d7c20",
@@ -30,55 +39,39 @@
       }
     },
     "Burner": {
-      "source": "./contracts/Burner.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/Burner.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x9a0766d93b6608b7",
+        "mainnet": "0xf233dcee88fe0abe"
+      }
+    },
+    "FungibleToken": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleToken.cdc",
+      "aliases": {
+        "emulator": "0xee82856bf20e2aa6",
         "testnet": "0x9a0766d93b6608b7",
         "mainnet": "0xf233dcee88fe0abe"
       }
     },
     "MetadataViews": {
-      "source": "./contracts/MetadataViews.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/MetadataViews.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x631e88ae7f1d7c20",
         "mainnet": "0x1d7e57aa55817448"
-      }
-    },
-    "FungibleToken": {
-      "source": "./contracts/FungibleToken.cdc",
-      "aliases": {
-        "emulator": "0xee82856bf20e2aa6",
-        "testnet": "0x9a0766d93b6608b7",
-        "mainnet": "0xf233dcee88fe0abe"
       }
     },
     "FungibleTokenMetadataViews": {
-      "source": "./contracts/FungibleTokenMetadataViews.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/FungibleTokenMetadataViews.cdc",
       "aliases": {
         "emulator": "0xee82856bf20e2aa6",
         "testnet": "0x9a0766d93b6608b7",
         "mainnet": "0xf233dcee88fe0abe"
       }
     },
-    "ViewResolver": {
-      "source": "./contracts/ViewResolver.cdc",
-      "aliases": {
-        "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x631e88ae7f1d7c20",
-        "mainnet": "0x1d7e57aa55817448"
-      }
-    },
-    "HybridCustody": {
-      "source": "./contracts/hybrid-custody/HybridCustody.cdc",
-      "aliases": {
-        "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x294e44e1ec6993c6",
-        "mainnet": "0xd8a7e05a7ac670c0"
-      }
-    },
     "CapabilityFactory": {
-      "source": "./contracts/hybrid-custody/CapabilityFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/CapabilityFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -86,7 +79,7 @@
       }
     },
     "CapabilityDelegator": {
-      "source": "./contracts/hybrid-custody/CapabilityDelegator.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/CapabilityDelegator.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -94,7 +87,15 @@
       }
     },
     "CapabilityFilter": {
-      "source": "./contracts/hybrid-custody/CapabilityFilter.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/CapabilityFilter.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x294e44e1ec6993c6",
+        "mainnet": "0xd8a7e05a7ac670c0"
+      }
+    },
+    "HybridCustody": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/HybridCustody.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -102,7 +103,7 @@
       }
     },
     "FTAllFactory": {
-      "source": "./contracts/hybrid-custody/factories/FTAllFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/factories/FTAllFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -110,7 +111,7 @@
       }
     },
     "FTBalanceFactory": {
-      "source": "./contracts/hybrid-custody/factories/FTBalanceFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/factories/FTBalanceFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -118,7 +119,7 @@
       }
     },
     "FTProviderFactory": {
-      "source": "./contracts/hybrid-custody/factories/FTProviderFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/factories/FTProviderFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -126,7 +127,7 @@
       }
     },
     "FTReceiverFactory": {
-      "source": "./contracts/hybrid-custody/factories/FTReceiverFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/factories/FTReceiverFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -134,7 +135,7 @@
       }
     },
     "NFTCollectionPublicFactory": {
-      "source": "./contracts/hybrid-custody/factories/NFTCollectionPublicFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/factories/NFTCollectionPublicFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -142,7 +143,7 @@
       }
     },
     "NFTProviderAndCollectionPublicFactory": {
-      "source": "./contracts/hybrid-custody/factories/NFTProviderAndCollectionPublicFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/factories/NFTProviderAndCollectionPublicFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -150,7 +151,7 @@
       }
     },
     "NFTProviderFactory": {
-      "source": "./contracts/hybrid-custody/factories/NFTProviderFactory.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/hybrid-custody/factories/NFTProviderFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -158,7 +159,7 @@
       }
     },
     "NFTCatalog": {
-      "source": "./contracts/nft-catalog/NFTCatalog.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/nft-catalog/NFTCatalog.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x324c34e1c517e4db",
@@ -166,7 +167,7 @@
       }
     },
     "NFTCatalogAdmin": {
-      "source": "./contracts/nft-catalog/NFTCatalogAdmin.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/nft-catalog/NFTCatalogAdmin.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x324c34e1c517e4db",
@@ -174,7 +175,7 @@
       }
     },
     "FlowToken": {
-      "source": "./contracts/FlowToken.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/FlowToken.cdc",
       "aliases": {
         "emulator": "0x0ae53cb6e3f42a79",
         "testnet": "0x7e60df042a9c0868",
@@ -182,7 +183,7 @@
       }
     },
     "FlowStorageFees": {
-      "source": "./contracts/FlowStorageFees.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/FlowStorageFees.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x8c5303eaa26202d6",
@@ -190,7 +191,7 @@
       }
     },
     "TokenForwarding": {
-      "source": "./contracts/TokenForwarding.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/TokenForwarding.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x51ea0e37c27a1f1a",
@@ -198,7 +199,7 @@
       }
     },
     "DapperUtilityCoin": {
-      "source": "./contracts/dapper/DapperUtilityCoin.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/dapper/DapperUtilityCoin.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x82ec283f88a62e65",
@@ -206,15 +207,23 @@
       }
     },
     "FlowUtilityToken": {
-      "source": "./contracts/dapper/FlowUtilityToken.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/dapper/FlowUtilityToken.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x82ec283f88a62e65",
         "mainnet": "0xead892083b3e2c6c"
       }
     },
+    "FeeEstimator": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/lost-and-found/FeeEstimator.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0xbe4635353f55bbd4",
+        "mainnet": "0x473d6a2c37eab5be"
+      }
+    },
     "LostAndFound": {
-      "source": "./contracts/lost-and-found/LostAndFound.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/lost-and-found/LostAndFound.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0xbe4635353f55bbd4",
@@ -222,47 +231,31 @@
       }
     },
     "LostAndFoundHelper": {
-      "source": "./contracts/lost-and-found/LostAndFoundHelper.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/lost-and-found/LostAndFoundHelper.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0xbe4635353f55bbd4",
         "mainnet": "0x473d6a2c37eab5be"
-      }
-    },
-    "FeeEstimator": {
-      "source": "./contracts/lost-and-found/FeeEstimator.cdc",
-      "aliases": {
-        "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0xbe4635353f55bbd4",
-        "mainnet": "0x473d6a2c37eab5be"
-      }
-    },
-    "TopShot": {
-      "source": "./contracts/dapper/TopShot.cdc",
-      "aliases": {
-        "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x877931736ee77cff",
-        "mainnet": "0x0b2a3299cc857e29"
       }
     },
     "TopShotLocking": {
-      "source": "./contracts/dapper/TopShotLocking.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/dapper/TopShotLocking.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x877931736ee77cff",
         "mainnet": "0x0b2a3299cc857e29"
       }
     },
-    "DapperOffersV2": {
-      "source": "./contracts/dapper/offers/DapperOffersV2.cdc",
+    "TopShot": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/dapper/TopShot.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x8a5f647e58dde1ee",
-        "mainnet": "0xb8ea91944fd51c43"
+        "testnet": "0x877931736ee77cff",
+        "mainnet": "0x0b2a3299cc857e29"
       }
     },
     "OffersV2": {
-      "source": "./contracts/dapper/offers/OffersV2.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/dapper/offers/OffersV2.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x8a5f647e58dde1ee",
@@ -270,7 +263,15 @@
       }
     },
     "Resolver": {
-      "source": "./contracts/dapper/offers/Resolver.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/dapper/offers/Resolver.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x8a5f647e58dde1ee",
+        "mainnet": "0xb8ea91944fd51c43"
+      }
+    },
+    "DapperOffersV2": {
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/dapper/offers/DapperOffersV2.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x8a5f647e58dde1ee",
@@ -278,7 +279,7 @@
       }
     },
     "ArrayUtils": {
-      "source": "./contracts/flow-utils/ArrayUtils.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/flow-utils/ArrayUtils.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
@@ -286,7 +287,7 @@
       }
     },
     "StringUtils": {
-      "source": "./contracts/flow-utils/StringUtils.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/flow-utils/StringUtils.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
@@ -294,7 +295,7 @@
       }
     },
     "AddressUtils": {
-      "source": "./contracts/flow-utils/AddressUtils.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/flow-utils/AddressUtils.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
@@ -302,7 +303,7 @@
       }
     },
     "ScopedFTProviders": {
-      "source": "./contracts/flow-utils/ScopedFTProviders.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/flow-utils/ScopedFTProviders.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
@@ -310,7 +311,7 @@
       }
     },
     "ScopedNFTProviders": {
-      "source": "./contracts/flow-utils/ScopedNFTProviders.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/flow-utils/ScopedNFTProviders.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x31ad40c07a2a9788",
@@ -318,7 +319,7 @@
       }
     },
     "FindViews": {
-      "source": "./contracts/find/FindViews.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/find/FindViews.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "mainnet": "0x097bafa4e0b48eef",
@@ -326,7 +327,7 @@
       }
     },
     "FLOAT": {
-      "source": "./contracts/emerald-city/FLOAT.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/emerald-city/FLOAT.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "mainnet": "0x2d4c3caffbeab845",
@@ -334,14 +335,14 @@
       }
     },
     "ExampleNFT": {
-      "source": "./contracts/example/ExampleNFT.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/example/ExampleNFT.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testing": "0x0000000000000007"
       }
     },
     "ExampleToken": {
-      "source": "./contracts/example/ExampleToken.cdc",
+      "source": "./node_modules/@flowtyio/flow-contracts/contracts/example/ExampleToken.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testing": "0x0000000000000007"
@@ -351,44 +352,45 @@
   "deployments": {
     "emulator": {
       "emulator-account": [
-        "Burner",
-        "NonFungibleToken",
-        "MetadataViews",
+        "Importer",
         "ViewResolver",
-        "NFTCatalog",
-        "NFTCatalogAdmin",
-        "TokenForwarding",
-        "DapperUtilityCoin",
-        "FlowUtilityToken",
-        "FlowStorageFees",
-        "FeeEstimator",
-        "LostAndFound",
-        "LostAndFoundHelper",
-        "Resolver",
-        "DapperOffersV2",
-        "OffersV2",
-        "TopShot",
-        "TopShotLocking",
-        "ArrayUtils",
-        "StringUtils",
-        "AddressUtils",
-        "ScopedNFTProviders",
-        "ScopedFTProviders",
-        "FindViews",
-        "FLOAT",
-        "ExampleNFT",
-        "ExampleToken",
-        "HybridCustody",
+        "NonFungibleToken",
+        "Burner",
+        "MetadataViews",
         "CapabilityFactory",
         "CapabilityDelegator",
         "CapabilityFilter",
+        "HybridCustody",
         "FTAllFactory",
         "FTBalanceFactory",
         "FTProviderFactory",
         "FTReceiverFactory",
         "NFTCollectionPublicFactory",
         "NFTProviderAndCollectionPublicFactory",
-        "NFTProviderFactory"
+        "NFTProviderFactory",
+        "NFTCatalog",
+        "NFTCatalogAdmin",
+        "FlowStorageFees",
+        "TokenForwarding",
+        "DapperUtilityCoin",
+        "FlowUtilityToken",
+        "FeeEstimator",
+        "LostAndFound",
+        "LostAndFoundHelper",
+        "TopShotLocking",
+        "TopShot",
+        "OffersV2",
+        "Resolver",
+        "DapperOffersV2",
+        "ArrayUtils",
+        "StringUtils",
+        "AddressUtils",
+        "ScopedFTProviders",
+        "ScopedNFTProviders",
+        "FindViews",
+        "FLOAT",
+        "ExampleNFT",
+        "ExampleToken"
       ],
       "emulator-ft": [
         "FungibleToken",
