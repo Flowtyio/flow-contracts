@@ -15,7 +15,7 @@ access(all) contract Resolver {
     // which is used within the Resolver resource for offer acceptance validation
     access(all) resource interface ResolverPublic {
         access(all) fun checkOfferResolver(
-         item: &{NonFungibleToken.INFT, ViewResolver.Resolver},
+         item: &{NonFungibleToken.NFT, ViewResolver.Resolver},
          offerParamsString: {String:String},
          offerParamsUInt64: {String:UInt64},
          offerParamsUFix64: {String:UFix64}): Bool
@@ -28,7 +28,7 @@ access(all) contract Resolver {
         // Holds the validation rules for resolver each type of supported ResolverType
         // Function returns TRUE if the provided nft item passes the criteria for exchange
         access(all) fun checkOfferResolver(
-         item: &{NonFungibleToken.INFT, ViewResolver.Resolver},
+         item: &{NonFungibleToken.NFT, ViewResolver.Resolver},
          offerParamsString: {String:String},
          offerParamsUInt64: {String:UInt64},
          offerParamsUFix64: {String:UFix64}): Bool {

@@ -130,7 +130,7 @@ access(all) contract OffersV2 {
         // This will accept the offer if provided with the NFT id that matches the Offer
         //
         access(all) fun accept(
-            item: @{NonFungibleToken.INFT, ViewResolver.Resolver},
+            item: @{NonFungibleToken.NFT, ViewResolver.Resolver},
             receiverCapability: Capability<&{FungibleToken.Receiver}>,
         ): Void
         // getDetails
@@ -210,7 +210,7 @@ access(all) contract OffersV2 {
         // - Provided with a NFT matching the NFT Type within the Offer details.
         //
         access(all) fun accept(
-                item: @{NonFungibleToken.INFT, ViewResolver.Resolver},
+                item: @{NonFungibleToken.NFT, ViewResolver.Resolver},
                 receiverCapability: Capability<&{FungibleToken.Receiver}>,
             ): Void {
 
@@ -221,7 +221,7 @@ access(all) contract OffersV2 {
 
             let resolverCapability = self.resolverCapability.borrow() ?? panic("could not borrow resolver")
             let resolverResult = resolverCapability.checkOfferResolver(
-                item: &item as &{NonFungibleToken.INFT, ViewResolver.Resolver},
+                item: &item as &{NonFungibleToken.NFT, ViewResolver.Resolver},
                 offerParamsString: self.details.offerParamsString,
                 offerParamsUInt64: self.details.offerParamsUInt64,
                 offerParamsUFix64: self.details.offerParamsUFix64,
