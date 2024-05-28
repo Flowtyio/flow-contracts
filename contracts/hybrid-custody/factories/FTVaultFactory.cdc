@@ -38,8 +38,9 @@ access(all) contract FTVaultFactory {
             if !cap.check() {
                 return nil
             }
-            
+                
             return cap
+
         }
     }
 }

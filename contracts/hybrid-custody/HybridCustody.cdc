@@ -115,7 +115,7 @@ access(all) contract HybridCustody {
         /// access control are managed through the child account.
         access(Owner) fun publishToParent(
             parentAddress: Address,
-            factory: Capability<&{CapabilityFactory.Getter}>,
+            factory: Capability<&CapabilityFactory.Manager>,
             filter: Capability<&{CapabilityFilter.Filter}>
         ) {
             pre {
@@ -140,7 +140,7 @@ access(all) contract HybridCustody {
         // setCapabilityFactoryForParent
         // Override the existing CapabilityFactory Capability for a given parent. This will allow the owner of the
         // account to start managing their own factory of capabilities to be able to retrieve
-        access(Owner) fun setCapabilityFactoryForParent(parent: Address, cap: Capability<&{CapabilityFactory.Getter}>) {
+        access(Owner) fun setCapabilityFactoryForParent(parent: Address, cap: Capability<&CapabilityFactory.Manager>) {
             pre {
                 cap.check(): "Invalid CapabilityFactory.Getter Capability provided"
             }
@@ -529,7 +529,7 @@ access(all) contract HybridCustody {
         /// account. The CapabilityFactory returns Capabilities which can be casted to their appropriate types once
         /// obtained, but only if the child account has configured their factory to allow it. For instance, a
         /// ChildAccount might choose to expose NonFungibleToken.Provider, but not FungibleToken.Provider
-        access(self) var factory: Capability<&{CapabilityFactory.Getter}>
+        access(self) var factory: Capability<&CapabilityFactory.Manager>
 
         /// The CapabilityFilter is a restriction put at the front of obtaining any non-public Capability. Some wallets
         /// might want to give access to NonFungibleToken.Provider, but only to **some** of the collections it manages,
@@ -541,7 +541,7 @@ access(all) contract HybridCustody {
         /// certain type. When using the CapabilityDelegator, you do not have the ability to specify which path a
         /// capability came from. For instance, Dapper Wallet might choose to expose a Capability to their Full TopShot
         /// collection, but only to the path that the collection exists in.
-        access(self) let delegator: Capability<auth(CapabilityDelegator.Get) &{CapabilityDelegator.GetterPublic, CapabilityDelegator.GetterPrivate}>
+        access(self) let delegator: Capability<auth(CapabilityDelegator.Get) &CapabilityDelegator.Delegator>
 
         /// managerCapabilityFilter is a component optionally given to a child account when a manager redeems it. If
         /// this filter is not nil, any Capability returned through the `getCapability` function checks that the
@@ -580,7 +580,7 @@ access(all) contract HybridCustody {
 
         /// Sets the CapabiltyFactory.Manager Capability
         ///
-        access(contract) fun setCapabilityFactory(cap: Capability<&{CapabilityFactory.Getter}>) {
+        access(contract) fun setCapabilityFactory(cap: Capability<&CapabilityFactory.Manager>) {
             self.factory = cap
         }
  
@@ -730,9 +730,9 @@ access(all) contract HybridCustody {
 
         init(
             _ childCap: Capability<&{BorrowableAccount, OwnedAccountPublic, ViewResolver.Resolver}>,
-            _ factory: Capability<&{CapabilityFactory.Getter}>,
+            _ factory: Capability<&CapabilityFactory.Manager>,
             _ filter: Capability<&{CapabilityFilter.Filter}>,
-            _ delegator: Capability<auth(CapabilityDelegator.Get) &{CapabilityDelegator.GetterPublic, CapabilityDelegator.GetterPrivate}>,
+            _ delegator: Capability<auth(CapabilityDelegator.Get) &CapabilityDelegator.Delegator>,
             _ parent: Address
         ) {
             pre {
@@ -853,7 +853,7 @@ access(all) contract HybridCustody {
         ///
         access(Owner) fun publishToParent(
             parentAddress: Address,
-            factory: Capability<&{CapabilityFactory.Getter}>,
+            factory: Capability<&CapabilityFactory.Manager>,
             filter: Capability<&{CapabilityFilter.Filter}>
         ) {
             pre {
@@ -880,7 +880,7 @@ access(all) contract HybridCustody {
             let pubCap = acct.capabilities.storage.issue<&{CapabilityDelegator.GetterPublic}>(capDelegatorStorage)
             acct.capabilities.publish(pubCap, at: capDelegatorPublic)
 
-            let delegator = acct.capabilities.storage.issue<auth(CapabilityDelegator.Get) &{CapabilityDelegator.GetterPublic, CapabilityDelegator.GetterPrivate}>(capDelegatorStorage)
+            let delegator = acct.capabilities.storage.issue<auth(CapabilityDelegator.Get) &CapabilityDelegator.Delegator>(capDelegatorStorage)
             assert(delegator.check(), message: "failed to setup capability delegator for parent address")
 
             let borrowableCap = self.borrowAccount().capabilities.storage.issue<&{BorrowableAccount, OwnedAccountPublic, ViewResolver.Resolver}>(
@@ -1109,7 +1109,7 @@ access(all) contract HybridCustody {
         ///
         access(Owner) fun setCapabilityFactoryForParent(
             parent: Address,
-            cap: Capability<&{CapabilityFactory.Getter}>
+            cap: Capability<&CapabilityFactory.Manager>
         ) {
             let p = self.borrowChildAccount(parent: parent) ?? panic("could not find parent address")
             p.setCapabilityFactory(cap: cap)
@@ -1124,9 +1124,9 @@ access(all) contract HybridCustody {
 
         /// Retrieves a reference to the Delegator associated with the given parent account if one exists.
         ///
-        access(Owner) fun borrowCapabilityDelegatorForParent(parent: Address): auth(CapabilityDelegator.Owner) &CapabilityDelegator.Delegator? {
+        access(Owner) fun borrowCapabilityDelegatorForParent(parent: Address): auth(CapabilityDelegator.Get, CapabilityDelegator.Add, CapabilityDelegator.Delete) &CapabilityDelegator.Delegator? {
             let identifier = HybridCustody.getCapabilityDelegatorIdentifier(parent)
-            return self.borrowAccount().storage.borrow<auth(CapabilityDelegator.Owner) &CapabilityDelegator.Delegator>(from: StoragePath(identifier: identifier)!)
+            return self.borrowAccount().storage.borrow<auth(CapabilityDelegator.Get, CapabilityDelegator.Add, CapabilityDelegator.Delete) &CapabilityDelegator.Delegator>(from: StoragePath(identifier: identifier)!)
         }
 
         /// Adds the provided Capability to the Delegator associated with the given parent account.
