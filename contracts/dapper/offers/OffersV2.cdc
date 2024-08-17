@@ -2,10 +2,10 @@ import "FungibleToken"
 import "NonFungibleToken"
 import "DapperUtilityCoin"
 import "MetadataViews"
-import "Resolver"
 import "ViewResolver"
+import "Resolver"
 
-// OffersV2
+/// OffersV2
 //
 // Contract holds the Offer resource and a public method to create them.
 //
@@ -141,6 +141,10 @@ access(all) contract OffersV2 {
 
 
     access(all) resource Offer: OfferPublic {
+
+        access(all)  event ResourceDestroyed(purchased: Bool = self.details.purchased, offerId: UInt64 = self.details.offerId)
+
+
         // The OfferDetails struct of the Offer
         access(self) let details: OfferDetails
         // The vault which will handle the payment if the Offer is accepted.
@@ -151,7 +155,7 @@ access(all) contract OffersV2 {
         access(contract) let resolverCapability: Capability<&{Resolver.ResolverPublic}>
 
         init(
-            vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider, FungibleToken.Balance}>,
+            vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Vault}>,
             nftReceiverCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
             nftType: Type,
             amount: UFix64,
@@ -252,8 +256,8 @@ access(all) contract OffersV2 {
 
             // If a DUC vault is being used for payment we must assert that no DUC is leaking from the transactions.
             let isDucVault = self.vaultRefCapability.isInstance(
-                Type<Capability<&{FungibleToken.Provider, FungibleToken.Balance}>>()
-            )
+                Type<Capability<&DapperUtilityCoin.Vault>>()
+            ) // todo: check if this is correct
 
             if isDucVault {
                 assert(self.vaultRefCapability.borrow()!.balance == initalDucSupply, message: "DUC is leaking")
@@ -279,14 +283,14 @@ access(all) contract OffersV2 {
         // getDetails
         // Return Offer details
         //
-        access(all) fun getDetails(): OfferDetails {
+        access(all) view fun getDetails(): OfferDetails {
             return self.details
         }
 
         // getRoyaltyInfo
         // Return royalty details
         //
-        access(all) fun getRoyaltyInfo(): {Address:UFix64} {
+        access(all) view fun getRoyaltyInfo(): {Address:UFix64} {
             let royaltyInfo: {Address:UFix64} = {}
 
             for royalty in self.details.royalties {
@@ -294,31 +298,11 @@ access(all) contract OffersV2 {
             }
             return royaltyInfo;
         }
-
-        // destroy() {
-        //     if !self.details.purchased {
-        //         emit OfferCompleted(
-        //             purchased: self.details.purchased,
-        //             acceptingAddress: nil,
-        //             offerAddress: self.nftReceiverCapability.address,
-        //             offerId: self.details.offerId,
-        //             nftType: self.details.nftType,
-        //             offerAmount: self.details.offerAmount,
-        //             royalties: self.getRoyaltyInfo(),
-        //             offerType: self.details.offerParamsString["_type"] ?? "unknown",
-        //             offerParamsString: self.details.offerParamsString,
-        //             offerParamsUFix64: self.details.offerParamsUFix64,
-        //             offerParamsUInt64: self.details.offerParamsUInt64,
-        //             paymentVaultType: self.details.paymentVaultType,
-        //             nftId: nil,
-        //         )
-        //     }
-        // }
     }
 
     // makeOffer
     access(all) fun makeOffer(
-        vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider, FungibleToken.Balance}>,
+        vaultRefCapability:  Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Vault}>,
         nftReceiverCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
         nftType: Type,
         amount: UFix64,
@@ -342,4 +326,3 @@ access(all) contract OffersV2 {
         return <-newOfferResource
     }
 }
- 

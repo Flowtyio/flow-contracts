@@ -1,8 +1,14 @@
 import "NonFungibleToken"
 import "MetadataViews"
-import "ViewResolver"
 import "TopShot"
+import "ViewResolver"
 
+// Resolver
+//
+// Contract holds the Offer exchange resolution rules.
+//
+// When an Offer is created a ResolverType is included. The ResolverType is also
+// passed into checkOfferResolver() from the Offers contract on exchange validation
 access(all) contract Resolver {
     // Current list of supported resolution rules.
     access(all) enum ResolverType: UInt8 {
@@ -35,7 +41,7 @@ access(all) contract Resolver {
             if offerParamsString["resolver"] == ResolverType.NFT.rawValue.toString() {
                 assert(item.id.toString() == offerParamsString["nftId"], message: "item NFT does not have specified ID")
                 return true
-            } else if offerParamsString["resolver"] == ResolverType.TopShotEdition.rawValue.toString() {
+            }  else if offerParamsString["resolver"] == ResolverType.TopShotEdition.rawValue.toString() {
                 // // Get the Top Shot specific metadata for this NFT
                 let view = item.resolveView(Type<TopShot.TopShotMomentMetadataView>())!
                 let metadata = view as! TopShot.TopShotMomentMetadataView

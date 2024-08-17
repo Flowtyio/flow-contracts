@@ -2,6 +2,8 @@ import "OffersV2"
 import "FungibleToken"
 import "NonFungibleToken"
 import "Resolver"
+import "ViewResolver"
+
 
 // DapperOffersV2
 //
@@ -12,6 +14,9 @@ import "Resolver"
 // get details on Offers contained within it.
 //
 access(all) contract DapperOffersV2 {
+
+    access(all) entitlement Manager
+    access(all) entitlement ProxyManager
     // DapperOffersV2
     // This contract has been deployed.
     // Event consumers can now expect events from this contract.
@@ -51,7 +56,7 @@ access(all) contract DapperOffersV2 {
         //
         access(all) fun addProxyCapability(
             account: Address,
-            cap: Capability<&{DapperOffersV2.DapperOfferProxyManager}>
+            cap: Capability<auth(ProxyManager) &DapperOffer>
         )
     }
 
@@ -62,8 +67,8 @@ access(all) contract DapperOffersV2 {
         // createOffer
         // Allows the DapperOffer owner to create Offers.
         //
-        access(all) fun createOffer(
-            vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider, FungibleToken.Balance}>,
+        access(Manager) fun createOffer(
+            vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Vault}>,
             nftReceiverCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
             nftType: Type,
             amount: UFix64,
@@ -76,7 +81,7 @@ access(all) contract DapperOffersV2 {
         // removeOffer
         // Allows the DapperOffer owner to remove offers
         //
-        access(all) fun removeOffer(offerId: UInt64)
+        access(Manager | ProxyManager) fun removeOffer(offerId: UInt64)
     }
 
     // DapperOfferProxyManager
@@ -86,11 +91,11 @@ access(all) contract DapperOffersV2 {
         // removeOffer
         // Allows the DapperOffer owner to remove offers
         //
-        access(all) fun removeOffer(offerId: UInt64)
+        access(Manager | ProxyManager) fun removeOffer(offerId: UInt64)
         // removeOfferFromProxy
         // Allows the DapperOffer proxy owner to remove offers
         //
-        access(all) fun removeOfferFromProxy(account: Address, offerId: UInt64)
+        access(ProxyManager) fun removeOfferFromProxy(account: Address, offerId: UInt64)
     }
 
 
@@ -98,18 +103,18 @@ access(all) contract DapperOffersV2 {
     // A resource that allows its owner to manage a list of Offers, and anyone to interact with them
     // in order to query their details and accept the Offers for NFTs that they represent.
     //
-    access(all) resource DapperOffer : DapperOfferManager, DapperOfferPublic, DapperOfferProxyManager {
+    access(all) resource DapperOffer :DapperOfferManager, DapperOfferPublic, DapperOfferProxyManager {
         // The dictionary of Address to DapperOfferProxyManager capabilities.
-        access(self) var removeOfferCapability: {Address:Capability<&{DapperOffersV2.DapperOfferProxyManager}>}
+        access(self) var removeOfferCapability: {Address:Capability<auth(ProxyManager) &DapperOffer>}
         // The dictionary of Offer uuids to Offer resources.
         access(self) var offers: @{UInt64:OffersV2.Offer}
 
         // addProxyCapability
         // Assign proxy capabilities (DapperOfferProxyManager) to an DapperOffer resource.
         //
-        access(all) fun addProxyCapability(account: Address, cap: Capability<&{DapperOffersV2.DapperOfferProxyManager}>) {
+        access(all) fun addProxyCapability(account: Address, cap: Capability<auth(ProxyManager) &DapperOffer>) {
             pre {
-                cap.borrow() != nil: "Invalid admin capability"
+                cap != nil: "Invalid admin capability"
             }
             self.removeOfferCapability[account] = cap
         }
@@ -117,23 +122,23 @@ access(all) contract DapperOffersV2 {
         // removeOfferFromProxy
         // Allows the DapperOffer proxy owner to remove offers
         //
-        access(all) fun removeOfferFromProxy(account: Address, offerId: UInt64) {
+        access(ProxyManager) fun removeOfferFromProxy(account: Address, offerId: UInt64) {
             pre {
                 self.removeOfferCapability[account] != nil:
                     "Cannot remove offers until the token admin has deposited the account registration capability"
             }
 
-            let adminRef = self.removeOfferCapability[account]!.borrow()!
+            let adminRef = self.removeOfferCapability[account]!
 
-            adminRef.removeOffer(offerId: offerId)
+            adminRef.borrow()!.removeOffer(offerId: offerId)
         }
 
 
         // createOffer
         // Allows the DapperOffer owner to create Offers.
         //
-        access(all) fun createOffer(
-            vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider, FungibleToken.Balance}>,
+        access(Manager) fun createOffer(
+            vaultRefCapability: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Vault}>,
             nftReceiverCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
             nftType: Type,
             amount: UFix64,
@@ -165,22 +170,28 @@ access(all) contract DapperOffersV2 {
         // removeOffer
         // Remove an Offer that has not yet been accepted from the collection and destroy it.
         //
-        access(all) fun removeOffer(offerId: UInt64) {
-            destroy self.offers.remove(key: offerId) ?? panic("missing offer")
+        access(Manager | ProxyManager) fun removeOffer(offerId: UInt64) {
+            let offer <- self.offers.remove(key: offerId) ?? panic("missing offer")
+            // offer.customDestroy()
+            destroy offer
         }
 
         // getOfferIds
         // Returns an array of the Offer resource IDs that are in the collection
         //
-        access(all) fun getOfferIds(): [UInt64] {
+        access(all) view fun getOfferIds(): [UInt64] {
             return self.offers.keys
         }
 
         // borrowOffer
         // Returns a read-only view of the Offer for the given OfferID if it is contained by this collection.
         //
-        access(all) fun borrowOffer(offerId: UInt64): &{OffersV2.OfferPublic}? {
-            return &self.offers[offerId]
+        access(all) view fun borrowOffer(offerId: UInt64): &{OffersV2.OfferPublic}? {
+            if self.offers[offerId] != nil {
+                return (&self.offers[offerId] as &{OffersV2.OfferPublic}?)!
+            } else {
+                return nil
+            }
         }
 
         // cleanup
@@ -206,13 +217,9 @@ access(all) contract DapperOffersV2 {
             emit DapperOfferInitialized(DapperOfferResourceId: self.uuid)
         }
 
-        // destructor
-        //
-        // destroy() {
-        //     destroy self.offers
-        //     // Let event consumers know that this storefront exists.
-        //     emit DapperOfferDestroyed(DapperOfferResourceId: self.uuid)
-        // }
+        access(all) event ResourceDestroyed(
+            id: UInt64 = self.uuid
+        )
     }
 
     // createDapperOffer
