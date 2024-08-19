@@ -141,8 +141,8 @@
         "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
-    "NFTProviderAndCollectionPublicFactory": {
-      "source": "./contracts/hybrid-custody/factories/NFTProviderAndCollectionPublicFactory.cdc",
+    "NFTProviderAndCollectionFactory": {
+      "source": "./contracts/hybrid-custody/factories/NFTProviderAndCollectionFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -346,6 +346,142 @@
         "emulator": "0xf8d6e0586b0a20c7",
         "testing": "0x0000000000000007"
       }
+    },
+    "ContractManager": {
+      "source": "./contracts/flowty-drops/ContractManager.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractInitializer": {
+      "source": "./contracts/flowty-drops/initializers/ContractInitializer.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractBorrower": {
+      "source": "./contracts/flowty-drops/initializers/ContractBorrower.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "OpenEditionInitializer": {
+      "source": "./contracts/flowty-drops/initializers/OpenEditionInitializer.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "BaseCollection": {
+      "source": "./contracts/flowty-drops/nft/BaseCollection.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractFactoryTemplate": {
+      "source": "./contracts/flowty-drops/nft/ContractFactoryTemplate.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractFactory": {
+      "source": "./contracts/flowty-drops/nft/ContractFactory.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "OpenEditionTemplate": {
+      "source": "./contracts/flowty-drops/nft/OpenEditionTemplate.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "UniversalCollection": {
+      "source": "./contracts/flowty-drops/nft/UniversalCollection.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "BaseNFT": {
+      "source": "./contracts/flowty-drops/nft/BaseNFT.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "NFTMetadata": {
+      "source": "./contracts/flowty-drops/nft/NFTMetadata.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtyDrops": {
+      "source": "./contracts/flowty-drops/FlowtyDrops.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "DropFactory": {
+      "source": "./contracts/flowty-drops/DropFactory.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtySwitchers": {
+      "source": "./contracts/flowty-drops/FlowtySwitchers.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtyPricers": {
+      "source": "./contracts/flowty-drops/FlowtyPricers.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtyAddressVerifiers": {
+      "source": "./contracts/flowty-drops/FlowtyAddressVerifiers.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0xd20430774404a7e8",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "DropTypes": {
+      "source": "./contracts/flowty-drops/DropTypes.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x3d49bb33997bd91e",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
     }
   },
   "deployments": {
@@ -387,7 +523,7 @@
         "FTProviderFactory",
         "FTReceiverFactory",
         "NFTCollectionPublicFactory",
-        "NFTProviderAndCollectionPublicFactory",
+        "NFTProviderAndCollectionFactory",
         "NFTProviderFactory"
       ],
       "emulator-ft": [
