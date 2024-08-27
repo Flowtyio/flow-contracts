@@ -496,7 +496,17 @@
       "aliases": {
         "testing": "0x0000000000000007",
         "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x83d75469f66d2ee6"
+        "testnet": "0x83d75469f66d2ee6",
+        "mainnet": "0xacc5081c003e24cf"
+      }
+    },
+    "FungibleTokenRouter": {
+      "source": "./contracts/fungible-token-router/FungibleTokenRouter.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007",
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x83231f90a288bc35",
+        "mainnet": "0x707c0b39a8d689cb"
       }
     }
   },
