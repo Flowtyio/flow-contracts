@@ -11,9 +11,10 @@ access(all) contract OpenEditionTemplate: ContractFactoryTemplate {
             "NFTMetadata",
             "UniversalCollection",
             "ContractBorrower",
-            "BaseCollection"
+            "BaseCollection",
+            "ViewResolver"
         ]).concat("\n\n")
-        .concat("access(all) contract ").concat(name).concat(": BaseCollection {\n")
+        .concat("access(all) contract ").concat(name).concat(": BaseCollection, ViewResolver {\n")
         .concat("    access(all) var MetadataCap: Capability<&NFTMetadata.Container>\n")
         .concat("    access(all) var totalSupply: UInt64\n")
         .concat("\n\n")
@@ -42,6 +43,7 @@ access(all) contract OpenEditionTemplate: ContractFactoryTemplate {
         .concat("        let minter <- create NFTMinter()\n")
         .concat("        self.account.storage.save(<-minter, to: FlowtyDrops.getMinterStoragePath(type: self.getType()))\n")
         .concat("        params[\"minterController\"] = self.account.capabilities.storage.issue<&{FlowtyDrops.Minter}>(FlowtyDrops.getMinterStoragePath(type: self.getType()))\n")
+        .concat("        params[\"type\"] = Type<@NFT>()\n")
         .concat("\n\n")
         .concat("        self.MetadataCap = ContractBorrower.borrowInitializer(typeIdentifier: initializeIdentifier).initialize(contractAcct: self.account, params: params).pubCap\n")
         .concat("    }\n")

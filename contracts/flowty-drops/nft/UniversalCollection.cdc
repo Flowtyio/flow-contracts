@@ -7,6 +7,9 @@ access(all) contract UniversalCollection {
         access(all) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
         access(all) var nftType: Type
 
+        access(all) let data: {String: AnyStruct}
+        access(all) let resources: @{String: AnyResource}
+
         access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
             return <- create Collection(nftType: self.nftType)
         }
@@ -14,6 +17,9 @@ access(all) contract UniversalCollection {
         init (nftType: Type) {
             self.ownedNFTs <- {}
             self.nftType = nftType
+
+            self.data = {}
+            self.resources <- {}
         }
     }
 

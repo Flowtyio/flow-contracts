@@ -2,7 +2,7 @@ import "FungibleToken"
 import "MetadataViews"
 
 import "FlowtyDrops"
-import "FlowtySwitchers"
+import "FlowtyActiveCheckers"
 import "FlowtyAddressVerifiers"
 import "FlowtyPricers"
 
@@ -22,7 +22,7 @@ access(all) contract DropFactory {
         }
 
         // This drop is always on and never ends.
-        let switcher = FlowtySwitchers.AlwaysOn()
+        let activeChecker = FlowtyActiveCheckers.AlwaysOn()
 
         // All addresses are allowed to participate
         let addressVerifier = FlowtyAddressVerifiers.AllowAll(maxPerMint: 10)
@@ -30,7 +30,7 @@ access(all) contract DropFactory {
         // The cost of each mint is the same, and only permits one token type as payment
         let pricer = FlowtyPricers.FlatPrice(price: price, paymentTokenType: paymentTokenType)
         
-        let phaseDetails = FlowtyDrops.PhaseDetails(switcher: switcher, display: nil, pricer: pricer, addressVerifier: addressVerifier)
+        let phaseDetails = FlowtyDrops.PhaseDetails(activeChecker: activeChecker, display: nil, pricer: pricer, addressVerifier: addressVerifier)
         let phase <- FlowtyDrops.createPhase(details: phaseDetails)
 
 
@@ -54,8 +54,8 @@ access(all) contract DropFactory {
             paymentTokenType.isSubtype(of: Type<@{FungibleToken.Vault}>()): "paymentTokenType must be a FungibleToken"
         }
 
-        // This switcher turns on at a set unix timestamp (or is on by default if nil), and ends at the specified end date if provided
-        let switcher = FlowtySwitchers.TimestampSwitch(start: startUnix, end: endUnix)
+        // This ActiveChecker turns on at a set unix timestamp (or is on by default if nil), and ends at the specified end date if provided
+        let activeChecker = FlowtyActiveCheckers.TimestampChecker(start: startUnix, end: endUnix)
 
         // All addresses are allowed to participate
         let addressVerifier = FlowtyAddressVerifiers.AllowAll(maxPerMint: 10)
@@ -63,7 +63,7 @@ access(all) contract DropFactory {
         // The cost of each mint is the same, and only permits one token type as payment
         let pricer = FlowtyPricers.FlatPrice(price: price, paymentTokenType: paymentTokenType)
         
-        let phaseDetails = FlowtyDrops.PhaseDetails(switcher: switcher, display: nil, pricer: pricer, addressVerifier: addressVerifier)
+        let phaseDetails = FlowtyDrops.PhaseDetails(activeChecker: activeChecker, display: nil, pricer: pricer, addressVerifier: addressVerifier)
         let phase <- FlowtyDrops.createPhase(details: phaseDetails)
 
         let nftType = CompositeType(nftTypeIdentifier) ?? panic("invalid nft type identifier")

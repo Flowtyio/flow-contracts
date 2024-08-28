@@ -96,7 +96,7 @@ access(all) contract DropTypes {
         access(all) let id: UInt64
         access(all) let index: Int
 
-        access(all) let switcherType: String
+        access(all) let activeCheckerType: String
         access(all) let pricerType: String
         access(all) let addressVerifierType: String
 
@@ -124,15 +124,15 @@ access(all) contract DropTypes {
             self.index = index
             self.id = phase.uuid
 
-            let d = phase.getDetails()
-            self.switcherType = d.switcher.getType().identifier
+            let d: FlowtyDrops.PhaseDetails = phase.getDetails()
+            self.activeCheckerType = d.activeChecker.getType().identifier
             self.pricerType = d.pricer.getType().identifier
             self.addressVerifierType = d.addressVerifier.getType().identifier
 
-            self.hasStarted = d.switcher.hasStarted()
-            self.hasEnded = d.switcher.hasEnded()
-            self.start = d.switcher.getStart()
-            self.end = d.switcher.getEnd()
+            self.hasStarted = d.activeChecker.hasStarted()
+            self.hasEnded = d.activeChecker.hasEnded()
+            self.start = d.activeChecker.getStart()
+            self.end = d.activeChecker.getEnd()
 
             self.paymentTypes = []
             for pt in d.pricer.getPaymentTypes() {
@@ -257,6 +257,10 @@ access(all) contract DropTypes {
                     paymentIdentifier: paymentIdentifier
                 )
                 phaseSummaries.append(summary)
+            }
+
+            if CompositeType(dropDetails.nftType) == nil {
+                continue
             }
 
             summaries.append(DropSummary(

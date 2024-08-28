@@ -82,12 +82,12 @@ access(all) contract interface BaseCollection: ViewResolver {
                 )
             case Type<MetadataViews.NFTCollectionDisplay>():
                 let c = getAccount(addr).contracts.borrow<&{BaseCollection}>(name: segments[2])!
-                let md = c.MetadataCap.borrow()
-                if md == nil {
+                let tmp = c.MetadataCap.borrow()
+                if tmp == nil {
                     return nil
                 }
 
-                return md!.collectionInfo.collectionDisplay
+                return tmp!.collectionInfo.getDisplay()
             case Type<FlowtyDrops.DropResolver>():
                 return FlowtyDrops.DropResolver(cap: acct.capabilities.get<&{FlowtyDrops.ContainerPublic}>(FlowtyDrops.ContainerPublicPath))
         }
