@@ -9,6 +9,7 @@ https://github.com/Flowtyio/fungible-token-router
 
 import "FungibleToken"
 import "FungibleTokenMetadataViews"
+import "FlowToken"
 
 access(all) contract FungibleTokenRouter {
     access(all) let StoragePath: StoragePath
@@ -44,18 +45,32 @@ access(all) contract FungibleTokenRouter {
         }
 
         access(all) fun deposit(from: @{FungibleToken.Vault}) {
-            let tokenType = from.getType().identifier
-            let destination = self.addressOverrides[tokenType] ?? self.defaultAddress
+            let tokenType = from.getType()
+            let destination = self.addressOverrides[tokenType.identifier] ?? self.defaultAddress
 
-            if let md = from.resolveView(Type<FungibleTokenMetadataViews.FTVaultData>()) {
-                let vaultData = md as! FungibleTokenMetadataViews.FTVaultData
-                let receiver = getAccount(destination).capabilities.get<&{FungibleToken.Receiver}>(vaultData.receiverPath)
-                
-                assert(receiver.check(), message: "no receiver found at path: ".concat(vaultData.receiverPath.toString()))
+            var vaultDataOpt: FungibleTokenMetadataViews.FTVaultData? = nil
 
-                emit TokensRouted(tokenType: tokenType, amount: from.balance, to: destination)
-                receiver.borrow()!.deposit(from: <-from)
+            if tokenType == Type<@FlowToken.Vault>() {
+                vaultDataOpt = FungibleTokenMetadataViews.FTVaultData(
+                    storagePath: /storage/flowTokenVault,
+                    receiverPath: /public/flowTokenReceiver,
+                    metadataPath: /public/flowTokenReceiver,
+                    receiverLinkedType: Type<&FlowToken.Vault>(),
+                    metadataLinkedType: Type<&FlowToken.Vault>(),
+                    createEmptyVaultFunction: fun(): @{FungibleToken.Vault} {
+                        return <- FlowToken.createEmptyVault(vaultType: tokenType)   
+                    }
+                )
+            } else if let md = from.resolveView(Type<FungibleTokenMetadataViews.FTVaultData>()) {
+                vaultDataOpt = md as! FungibleTokenMetadataViews.FTVaultData
             }
+
+            let vaultData = vaultDataOpt ?? panic("vault data could not be retrieved")
+            let receiver = getAccount(destination).capabilities.get<&{FungibleToken.Receiver}>(vaultData.receiverPath)
+            assert(receiver.check(), message: "no receiver found at path: ".concat(vaultData.receiverPath.toString()))
+
+            emit TokensRouted(tokenType: tokenType.identifier, amount: from.balance, to: destination)
+            receiver.borrow()!.deposit(from: <-from)
 
             panic("Could not find FungibleTokenMetadataViews.FTVaultData on depositing tokens")
         }
