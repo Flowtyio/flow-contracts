@@ -65,14 +65,12 @@ access(all) contract FungibleTokenRouter {
                 vaultDataOpt = md as! FungibleTokenMetadataViews.FTVaultData
             }
 
-            let vaultData = vaultDataOpt ?? panic("vault data could not be retrieved")
+            let vaultData = vaultDataOpt ?? panic("vault data could not be retrieved for type ".concat(tokenType.identifier))
             let receiver = getAccount(destination).capabilities.get<&{FungibleToken.Receiver}>(vaultData.receiverPath)
             assert(receiver.check(), message: "no receiver found at path: ".concat(vaultData.receiverPath.toString()))
 
             emit TokensRouted(tokenType: tokenType.identifier, amount: from.balance, to: destination)
             receiver.borrow()!.deposit(from: <-from)
-
-            panic("Could not find FungibleTokenMetadataViews.FTVaultData on depositing tokens")
         }
 
         access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
