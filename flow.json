@@ -1,6 +1,7 @@
 {
   "networks": {
     "emulator": "127.0.0.1:3569",
+    "testing": "127.0.0.1:3569",
     "mainnet": "access.mainnet.nodes.onflow.org:9000",
     "sandboxnet": "access.sandboxnet.nodes.onflow.org:9000",
     "testnet": "access.devnet.nodes.onflow.org:9000"
@@ -28,6 +29,14 @@
         "mainnet": "0x1d7e57aa55817448"
       }
     },
+    "Burner": {
+      "source": "./contracts/Burner.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x9a0766d93b6608b7",
+        "mainnet": "0xf233dcee88fe0abe"
+      }
+    },
     "MetadataViews": {
       "source": "./contracts/MetadataViews.cdc",
       "aliases": {
@@ -46,6 +55,14 @@
     },
     "FungibleTokenMetadataViews": {
       "source": "./contracts/FungibleTokenMetadataViews.cdc",
+      "aliases": {
+        "emulator": "0xee82856bf20e2aa6",
+        "testnet": "0x9a0766d93b6608b7",
+        "mainnet": "0xf233dcee88fe0abe"
+      }
+    },
+    "FungibleTokenSwitchboard": {
+      "source": "./contracts/FungibleTokenSwitchboard.cdc",
       "aliases": {
         "emulator": "0xee82856bf20e2aa6",
         "testnet": "0x9a0766d93b6608b7",
@@ -132,8 +149,8 @@
         "mainnet": "0xd8a7e05a7ac670c0"
       }
     },
-    "NFTProviderAndCollectionPublicFactory": {
-      "source": "./contracts/hybrid-custody/factories/NFTProviderAndCollectionPublicFactory.cdc",
+    "NFTProviderAndCollectionFactory": {
+      "source": "./contracts/hybrid-custody/factories/NFTProviderAndCollectionFactory.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x294e44e1ec6993c6",
@@ -177,7 +194,7 @@
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x8c5303eaa26202d6",
-        "mainnet": "0xf919ee77447b7497"
+        "mainnet": "0xe467b9dd11fa00df"
       }
     },
     "TokenForwarding": {
@@ -323,11 +340,180 @@
         "mainnet": "0x2d4c3caffbeab845",
         "testnet": "0x4d47bf3ce5e4393f"
       }
+    },
+    "ExampleNFT": {
+      "source": "./contracts/example/ExampleNFT.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testing": "0x0000000000000007"
+      }
+    },
+    "ExampleToken": {
+      "source": "./contracts/example/ExampleToken.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testing": "0x0000000000000007"
+      }
+    },
+    "ContractManager": {
+      "source": "./contracts/flowty-drops/ContractManager.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractInitializer": {
+      "source": "./contracts/flowty-drops/initializers/ContractInitializer.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractBorrower": {
+      "source": "./contracts/flowty-drops/initializers/ContractBorrower.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "OpenEditionInitializer": {
+      "source": "./contracts/flowty-drops/initializers/OpenEditionInitializer.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "BaseCollection": {
+      "source": "./contracts/flowty-drops/nft/BaseCollection.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractFactoryTemplate": {
+      "source": "./contracts/flowty-drops/nft/ContractFactoryTemplate.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "ContractFactory": {
+      "source": "./contracts/flowty-drops/nft/ContractFactory.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "OpenEditionTemplate": {
+      "source": "./contracts/flowty-drops/nft/OpenEditionTemplate.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "UniversalCollection": {
+      "source": "./contracts/flowty-drops/nft/UniversalCollection.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "BaseNFT": {
+      "source": "./contracts/flowty-drops/nft/BaseNFT.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "NFTMetadata": {
+      "source": "./contracts/flowty-drops/nft/NFTMetadata.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtyDrops": {
+      "source": "./contracts/flowty-drops/FlowtyDrops.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "DropFactory": {
+      "source": "./contracts/flowty-drops/DropFactory.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtyActiveCheckers": {
+      "source": "./contracts/flowty-drops/FlowtyActiveCheckers.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtyPricers": {
+      "source": "./contracts/flowty-drops/FlowtyPricers.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "FlowtyAddressVerifiers": {
+      "source": "./contracts/flowty-drops/FlowtyAddressVerifiers.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x772a10c786851a1b",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "DropTypes": {
+      "source": "./contracts/flowty-drops/DropTypes.cdc",
+      "aliases": {
+        "testing": "0x0000000000000006",
+        "testnet": "0x934da91a977f1ac4",
+        "emulator": "0xf8d6e0586b0a20c7"
+      }
+    },
+    "CapabilityCache": {
+      "source": "./contracts/capability-cache/CapabilityCache.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007",
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x83d75469f66d2ee6",
+        "mainnet": "0xacc5081c003e24cf"
+      }
+    },
+    "FungibleTokenRouter": {
+      "source": "./contracts/fungible-token-router/FungibleTokenRouter.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007",
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x83231f90a288bc35",
+        "mainnet": "0x707c0b39a8d689cb"
+      }
     }
   },
   "deployments": {
     "emulator": {
       "emulator-account": [
+        "Burner",
         "NonFungibleToken",
         "MetadataViews",
         "ViewResolver",
@@ -351,11 +537,25 @@
         "ScopedNFTProviders",
         "ScopedFTProviders",
         "FindViews",
-        "FLOAT"
+        "FLOAT",
+        "ExampleNFT",
+        "ExampleToken",
+        "HybridCustody",
+        "CapabilityFactory",
+        "CapabilityDelegator",
+        "CapabilityFilter",
+        "FTAllFactory",
+        "FTBalanceFactory",
+        "FTProviderFactory",
+        "FTReceiverFactory",
+        "NFTCollectionPublicFactory",
+        "NFTProviderAndCollectionFactory",
+        "NFTProviderFactory"
       ],
       "emulator-ft": [
         "FungibleToken",
-        "FungibleTokenMetadataViews"
+        "FungibleTokenMetadataViews",
+        "FungibleTokenSwitchboard"
       ],
       "emulator-flowtoken": [
         "FlowToken"

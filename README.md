@@ -49,7 +49,7 @@ Currently, the list includes:
 | FTProviderFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
 | FTReceiverFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
 | NFTCollectionPublicFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
-| NFTProviderAndCollectionPublicFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
+| NFTProviderAndCollectionFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
 | NFTProviderFactory | 0x294e44e1ec6993c6 | 0xd8a7e05a7ac670c0 |
 | NFTCatalog | 0x49a7cda3a1eecc29 | 0x324c34e1c517e4db |
 | NFTCatalogAdmin | 0x49a7cda3a1eecc29 | 0x324c34e1c517e4db |

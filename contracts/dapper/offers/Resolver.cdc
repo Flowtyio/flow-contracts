@@ -1,20 +1,27 @@
 import "NonFungibleToken"
 import "MetadataViews"
 import "TopShot"
+import "ViewResolver"
 
-pub contract Resolver {
+// Resolver
+//
+// Contract holds the Offer exchange resolution rules.
+//
+// When an Offer is created a ResolverType is included. The ResolverType is also
+// passed into checkOfferResolver() from the Offers contract on exchange validation
+access(all) contract Resolver {
     // Current list of supported resolution rules.
-    pub enum ResolverType: UInt8 {
-        pub case NFT
-        pub case TopShotEdition
-        pub case MetadataViewsEditions
+    access(all) enum ResolverType: UInt8 {
+        access(all) case NFT
+        access(all) case TopShotEdition
+        access(all) case MetadataViewsEditions
     }
 
     // Public resource interface that defines a method signature for checkOfferResolver
     // which is used within the Resolver resource for offer acceptance validation
-    pub resource interface ResolverPublic {
-        pub fun checkOfferResolver(
-         item: &AnyResource{NonFungibleToken.INFT, MetadataViews.Resolver},
+    access(all) resource interface ResolverPublic {
+        access(all) fun checkOfferResolver(
+         item: &{NonFungibleToken.NFT, ViewResolver.Resolver},
          offerParamsString: {String:String},
          offerParamsUInt64: {String:UInt64},
          offerParamsUFix64: {String:UFix64}): Bool
@@ -22,19 +29,19 @@ pub contract Resolver {
 
 
     // Resolver resource holds the Offer exchange resolution rules.
-    pub resource OfferResolver: ResolverPublic {
+    access(all) resource OfferResolver: ResolverPublic {
         // checkOfferResolver
         // Holds the validation rules for resolver each type of supported ResolverType
         // Function returns TRUE if the provided nft item passes the criteria for exchange
-        pub fun checkOfferResolver(
-         item: &AnyResource{NonFungibleToken.INFT, MetadataViews.Resolver},
+        access(all) fun checkOfferResolver(
+         item: &{NonFungibleToken.NFT, ViewResolver.Resolver},
          offerParamsString: {String:String},
          offerParamsUInt64: {String:UInt64},
          offerParamsUFix64: {String:UFix64}): Bool {
             if offerParamsString["resolver"] == ResolverType.NFT.rawValue.toString() {
                 assert(item.id.toString() == offerParamsString["nftId"], message: "item NFT does not have specified ID")
                 return true
-            } else if offerParamsString["resolver"] == ResolverType.TopShotEdition.rawValue.toString() {
+            }  else if offerParamsString["resolver"] == ResolverType.TopShotEdition.rawValue.toString() {
                 // // Get the Top Shot specific metadata for this NFT
                 let view = item.resolveView(Type<TopShot.TopShotMomentMetadataView>())!
                 let metadata = view as! TopShot.TopShotMomentMetadataView
@@ -64,7 +71,7 @@ pub contract Resolver {
 
     }
 
-    pub fun createResolver(): @OfferResolver {
+    access(all) fun createResolver(): @OfferResolver {
         return <-create OfferResolver()
     }
 }

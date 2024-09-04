@@ -8,14 +8,14 @@ import "StringUtils"
 //
 // ScopedProviders are meant to solve the issue of unbounded access FungibleToken vaults
 // when a provider is called for.
-pub contract ScopedFTProviders {
-    pub struct interface FTFilter {
-        pub fun canWithdrawAmount(_ amount: UFix64): Bool
-        pub fun markAmountWithdrawn(_ amount: UFix64)
-        pub fun getDetails(): {String: AnyStruct}
+access(all) contract ScopedFTProviders {
+    access(all) struct interface FTFilter {
+        access(all) view fun canWithdrawAmount(_ amount: UFix64): Bool
+        access(FungibleToken.Withdraw) fun markAmountWithdrawn(_ amount: UFix64)
+        access(all) fun getDetails(): {String: AnyStruct}
     }
 
-    pub struct AllowanceFilter: FTFilter {
+    access(all) struct AllowanceFilter: FTFilter {
         access(self) let allowance: UFix64
         access(self) var allowanceUsed: UFix64
 
@@ -24,15 +24,15 @@ pub contract ScopedFTProviders {
             self.allowanceUsed = 0.0
         }
 
-        pub fun canWithdrawAmount(_ amount: UFix64): Bool {
+        access(all) view fun canWithdrawAmount(_ amount: UFix64): Bool {
             return amount + self.allowanceUsed <= self.allowance
         }
 
-        pub fun markAmountWithdrawn(_ amount: UFix64) {
+        access(FungibleToken.Withdraw) fun markAmountWithdrawn(_ amount: UFix64) {
             self.allowanceUsed = self.allowanceUsed + amount
         }
 
-        pub fun getDetails(): {String: AnyStruct} {
+        access(all) fun getDetails(): {String: AnyStruct} {
             return {
                 "allowance": self.allowance,
                 "allowanceUsed": self.allowanceUsed
@@ -44,31 +44,35 @@ pub contract ScopedFTProviders {
     //
     // A ScopedFTProvider is a wrapped FungibleTokenProvider with
     // filters that can be defined by anyone using the ScopedFTProvider.
-    pub resource ScopedFTProvider: FungibleToken.Provider {
-        access(self) let provider: Capability<&{FungibleToken.Provider}>
+    access(all) resource ScopedFTProvider: FungibleToken.Provider {
+        access(self) let provider: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider}>
         access(self) var filters: [{FTFilter}]
 
         // block timestamp that this provider can no longer be used after
         access(self) let expiration: UFix64?
 
-        pub init(provider: Capability<&{FungibleToken.Provider}>, filters: [{FTFilter}], expiration: UFix64?) {
+        access(all) init(provider: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider}>, filters: [{FTFilter}], expiration: UFix64?) {
             self.provider = provider
             self.filters = filters
             self.expiration = expiration
         }
 
-        pub fun check(): Bool {
+        access(all) fun getProviderType(): Type {
+            return self.provider.borrow()!.getType()
+        }
+
+        access(all) fun check(): Bool {
             return self.provider.check()
         }
 
-        pub fun isExpired(): Bool {
+        access(all) view fun isExpired(): Bool {
             if let expiration = self.expiration {
                 return getCurrentBlock().timestamp >= expiration
             }
             return false
         }
 
-        pub fun canWithdraw(_ amount: UFix64): Bool {
+        access(all) view fun canWithdraw(_ amount: UFix64): Bool {
             if self.isExpired() {
                 return false
             }
@@ -82,7 +86,11 @@ pub contract ScopedFTProviders {
             return true
         }
 
-        pub fun withdraw(amount: UFix64): @FungibleToken.Vault {
+        access(all) view fun isAvailableToWithdraw(amount: UFix64): Bool {
+            return self.canWithdraw(amount)
+        }
+
+        access(FungibleToken.Withdraw) fun withdraw(amount: UFix64): @{FungibleToken.Vault} {
             pre {
                 !self.isExpired(): "provider has expired"
             }
@@ -100,7 +108,7 @@ pub contract ScopedFTProviders {
             return <-self.provider.borrow()!.withdraw(amount: amount)
         }
 
-        pub fun getDetails(): [{String: AnyStruct}] {
+        access(all) fun getDetails(): [{String: AnyStruct}] {
             let details: [{String: AnyStruct}] = []
             for filter in self.filters {
                 details.append(filter.getDetails())
@@ -110,8 +118,8 @@ pub contract ScopedFTProviders {
         }
     }
 
-    pub fun createScopedFTProvider(
-        provider: Capability<&{FungibleToken.Provider}>,
+    access(all) fun createScopedFTProvider(
+        provider: Capability<auth(FungibleToken.Withdraw) &{FungibleToken.Provider}>,
         filters: [{FTFilter}],
         expiration: UFix64?
     ): @ScopedFTProvider {
