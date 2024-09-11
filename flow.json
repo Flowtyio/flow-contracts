@@ -508,7 +508,42 @@
         "testnet": "0x83231f90a288bc35",
         "mainnet": "0x707c0b39a8d689cb"
       }
-    }
+    },
+    "EVM": {
+      "source": "./contracts/evm/EVM.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x8c5303eaa26202d6",
+        "mainnet": "0xe467b9dd11fa00df"
+      }
+    },
+    "FlowEVMBridgeConfig": {
+			"source": "./contracts/evm/FlowEVMBridgeConfig.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1e4aa0b87d10b141",
+				"testing": "0000000000000007",
+				"testnet": "dfc20aee650fcbdf"
+			}
+		},
+		"FlowEVMBridgeHandlerInterfaces": {
+			"source": "./contracts/evm/FlowEVMBridgeHandlerInterfaces.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1e4aa0b87d10b141",
+				"testing": "0000000000000007",
+				"testnet": "dfc20aee650fcbdf"
+			}
+		},
+		"FlowEVMBridgeHandlers": {
+			"source": "./contracts/evm/FlowEVMBridgeHandlers.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1e4aa0b87d10b141",
+				"testing": "0000000000000007",
+				"testnet": "dfc20aee650fcbdf"
+			}
+		}
   },
   "deployments": {
     "emulator": {
@@ -550,7 +585,11 @@
         "FTReceiverFactory",
         "NFTCollectionPublicFactory",
         "NFTProviderAndCollectionFactory",
-        "NFTProviderFactory"
+        "NFTProviderFactory",
+        "EVM",
+        "FlowEVMBridgeConfig",
+        "FlowEVMBridgeHandlerInterfaces",
+        "FlowEVMBridgeHandlers"
       ],
       "emulator-ft": [
         "FungibleToken",
