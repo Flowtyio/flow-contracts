@@ -16,18 +16,18 @@ npx flow-contracts add-all --config "$configPath"
 
 echo "starting the flow emulator in 5 seconds..."
 sleep 5
-nohup flow-c1 emulator &
+nohup flow emulator &
 
 sleep 5
 
 echo "deploying contracts..."
-flow-c1 project deploy --update
+flow project deploy --update
 
 echo "deployment complete!"
 
 sleep 3
 echo "cleaning up..."
-pkill -f flow-c1
+pkill -f flow
 rm flow.json
 
 exit 0
