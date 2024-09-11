@@ -520,30 +520,35 @@
     "FlowEVMBridgeConfig": {
 			"source": "./contracts/evm/FlowEVMBridgeConfig.cdc",
 			"aliases": {
-				"emulator": "f8d6e0586b0a20c7",
-				"mainnet": "1e4aa0b87d10b141",
-				"testing": "0000000000000007",
-				"testnet": "dfc20aee650fcbdf"
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
 			}
 		},
 		"FlowEVMBridgeHandlerInterfaces": {
 			"source": "./contracts/evm/FlowEVMBridgeHandlerInterfaces.cdc",
 			"aliases": {
-				"emulator": "f8d6e0586b0a20c7",
-				"mainnet": "1e4aa0b87d10b141",
-				"testing": "0000000000000007",
-				"testnet": "dfc20aee650fcbdf"
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
 			}
 		},
 		"FlowEVMBridgeHandlers": {
 			"source": "./contracts/evm/FlowEVMBridgeHandlers.cdc",
 			"aliases": {
-				"emulator": "f8d6e0586b0a20c7",
-				"mainnet": "1e4aa0b87d10b141",
-				"testing": "0000000000000007",
-				"testnet": "dfc20aee650fcbdf"
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
 			}
-		}
+		},
+    "USDCFlow": {
+      "source": "./contracts/tokens/USDCFlow",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x64adf39cbc354fcb",
+        "mainnet": "0xf1ab99c82dee3526"
+      }
+    }
   },
   "deployments": {
     "emulator": {
@@ -589,7 +594,8 @@
         "EVM",
         "FlowEVMBridgeConfig",
         "FlowEVMBridgeHandlerInterfaces",
-        "FlowEVMBridgeHandlers"
+        "FlowEVMBridgeHandlers",
+        "USDCFlow"
       ],
       "emulator-ft": [
         "FungibleToken",
