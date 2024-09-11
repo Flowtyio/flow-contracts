@@ -6,7 +6,7 @@ import "EVM"
 
 import "FlowEVMBridgeHandlerInterfaces"
 import "FlowEVMBridgeConfig"
-// import "FlowEVMBridgeUtils"
+import "FlowEVMBridgeUtils"
 
 /// FlowEVMBridgeHandlers
 ///
@@ -93,23 +93,23 @@ access(all) contract FlowEVMBridgeHandlers {
         /// @param tokens: The Vault containing the tokens to bridge
         /// @param to: The EVM address to transfer the tokens to
         ///
-        // access(account)
-        // fun fulfillTokensToEVM(
-        //     tokens: @{FungibleToken.Vault},
-        //     to: EVM.EVMAddress
-        // ) {
-        //     let evmAddress = self.getTargetEVMAddress()!
+        access(account)
+        fun fulfillTokensToEVM(
+            tokens: @{FungibleToken.Vault},
+            to: EVM.EVMAddress
+        ) {
+            let evmAddress = self.getTargetEVMAddress()!
 
-        //     // Get values from vault and burn
-        //     let amount = tokens.balance
-        //     let uintAmount = FlowEVMBridgeUtils.convertCadenceAmountToERC20Amount(amount, erc20Address: evmAddress)
+            // Get values from vault and burn
+            let amount = tokens.balance
+            let uintAmount = FlowEVMBridgeUtils.convertCadenceAmountToERC20Amount(amount, erc20Address: evmAddress)
 
-        //     assert(uintAmount > UInt256(0), message: "Amount to bridge must be greater than 0")
+            assert(uintAmount > UInt256(0), message: "Amount to bridge must be greater than 0")
 
-        //     Burner.burn(<-tokens)
+            Burner.burn(<-tokens)
 
-        //     FlowEVMBridgeUtils.mustTransferERC20(to: to, amount: uintAmount, erc20Address: evmAddress)
-        // }
+            FlowEVMBridgeUtils.mustTransferERC20(to: to, amount: uintAmount, erc20Address: evmAddress)
+        }
 
         /// Fulfill a request to bridge tokens from EVM to Cadence, minting the provided amount of tokens in Cadence
         /// and transferring from the named owner to bridge escrow in EVM.
@@ -121,34 +121,34 @@ access(all) contract FlowEVMBridgeHandlers {
         ///
         /// @return The minted Vault containing the the requested amount of Cadence tokens
         ///
-        // access(account)
-        // fun fulfillTokensFromEVM(
-        //     owner: EVM.EVMAddress,
-        //     type: Type,
-        //     amount: UInt256,
-        //     protectedTransferCall: fun (): EVM.Result
-        // ): @{FungibleToken.Vault} {
-        //     let evmAddress = self.getTargetEVMAddress()!
+        access(account)
+        fun fulfillTokensFromEVM(
+            owner: EVM.EVMAddress,
+            type: Type,
+            amount: UInt256,
+            protectedTransferCall: fun (): EVM.Result
+        ): @{FungibleToken.Vault} {
+            let evmAddress = self.getTargetEVMAddress()!
 
-        //     // Convert the amount to a UFix64
-        //     let ufixAmount = FlowEVMBridgeUtils.convertERC20AmountToCadenceAmount(
-        //             amount,
-        //             erc20Address: evmAddress
-        //         )
-        //     assert(ufixAmount > 0.0, message: "Amount to bridge must be greater than 0")
+            // Convert the amount to a UFix64
+            let ufixAmount = FlowEVMBridgeUtils.convertERC20AmountToCadenceAmount(
+                    amount,
+                    erc20Address: evmAddress
+                )
+            assert(ufixAmount > 0.0, message: "Amount to bridge must be greater than 0")
 
-        //     FlowEVMBridgeUtils.mustEscrowERC20(
-        //         owner: owner,
-        //         amount: amount,
-        //         erc20Address: evmAddress,
-        //         protectedTransferCall: protectedTransferCall
-        //     )
+            FlowEVMBridgeUtils.mustEscrowERC20(
+                owner: owner,
+                amount: amount,
+                erc20Address: evmAddress,
+                protectedTransferCall: protectedTransferCall
+            )
 
-        //     // After state confirmation, mint the tokens and return
-        //     let minter = self.borrowMinter() ?? panic("Minter not set")
-        //     let minted <- minter.mint(amount: ufixAmount)
-        //     return <-minted
-        // }
+            // After state confirmation, mint the tokens and return
+            let minter = self.borrowMinter() ?? panic("Minter not set")
+            let minted <- minter.mint(amount: ufixAmount)
+            return <-minted
+        }
 
         /* --- Admin --- */
 

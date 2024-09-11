@@ -541,8 +541,64 @@
 				"testnet": "0xdfc20aee650fcbdf"
 			}
 		},
+		"IBridgePermissions": {
+			"source": "./contracts/evm/IBridgePermissions.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
+			}
+		},
+		"Serialize": {
+			"source": "./contracts/evm/Serialize.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
+			}
+		},
+		"SerializeMetadata": {
+			"source": "./contracts/evm/SerializeMetadata.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
+			}
+		},
+		"ICrossVM": {
+			"source": "./contracts/evm/ICrossVM.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
+			}
+		},
+		"ICrossVMAsset": {
+			"source": "./contracts/evm/ICrossVMAsset.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
+			}
+		},
+		"CrossVMNFT": {
+			"source": "./contracts/evm/CrossVMNFT.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
+			}
+		},
+		"FlowEVMBridgeUtils": {
+			"source": "./contracts/evm/FlowEVMBridgeUtils.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1e4aa0b87d10b141",
+				"testnet": "0xdfc20aee650fcbdf"
+			}
+		},
     "USDCFlow": {
-      "source": "./contracts/tokens/USDCFlow",
+      "source": "./contracts/tokens/USDCFlow.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x64adf39cbc354fcb",
@@ -591,10 +647,6 @@
         "NFTCollectionPublicFactory",
         "NFTProviderAndCollectionFactory",
         "NFTProviderFactory",
-        "EVM",
-        "FlowEVMBridgeConfig",
-        "FlowEVMBridgeHandlerInterfaces",
-        "FlowEVMBridgeHandlers",
         "USDCFlow"
       ],
       "emulator-ft": [
