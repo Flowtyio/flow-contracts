@@ -42,6 +42,7 @@ access(all) contract DropTypes {
 
         access(all) let blockTimestamp: UInt64
         access(all) let blockHeight: UInt64
+        access(all) let royaltyRate: UFix64
 
         init(
             id: UInt64,
@@ -53,7 +54,8 @@ access(all) contract DropTypes {
             commissionRate: UFix64,
             nftType: Type,
             address: Address?,
-            phases: [PhaseSummary]
+            phases: [PhaseSummary],
+            royaltyRate: UFix64
         ) {
             self.id = id
             self.display = Display(display)
@@ -75,6 +77,7 @@ access(all) contract DropTypes {
             let b = getCurrentBlock()
             self.blockHeight = b.height
             self.blockTimestamp = UInt64(b.timestamp)
+            self.royaltyRate = royaltyRate
         }
     }
 
@@ -109,6 +112,7 @@ access(all) contract DropTypes {
         
         access(all) let address: Address?
         access(all) let remainingForAddress: Int?
+        access(all) let maxPerMint: Int?
 
         access(all) let quote: Quote?
 
@@ -146,6 +150,8 @@ access(all) contract DropTypes {
                 self.address = nil
                 self.remainingForAddress = nil
             }
+
+            self.maxPerMint = d.addressVerifier.getMaxPerMint(addr: self.address, totalMinted: totalMinted ?? 0, data: {} as {String: AnyStruct})
 
             if paymentIdentifier != nil && quantity != nil {
                 let price = d.pricer.getPrice(num: quantity!, paymentTokenType: CompositeType(paymentIdentifier!)!, minter: minter)
@@ -199,6 +205,14 @@ access(all) contract DropTypes {
             phaseSummaries.append(summary)
         }
 
+        var royaltyRate = 0.0
+        if let tmpRoyalties = resolver!.resolveContractView(resourceType: nftType, viewType: Type<MetadataViews.Royalties>()) {
+            let royalties = tmpRoyalties as! MetadataViews.Royalties
+            for r in royalties.getRoyalties() {
+                royaltyRate = royaltyRate + r.cut
+            }
+        }
+
         let dropSummary = DropSummary(
             id: drop!.uuid,
             display: dropDetails.display,
@@ -209,7 +223,8 @@ access(all) contract DropTypes {
             commissionRate: dropDetails.commissionRate,
             nftType: CompositeType(dropDetails.nftType)!,
             address: minter,
-            phases: phaseSummaries
+            phases: phaseSummaries,
+            royaltyRate: royaltyRate
         )
 
         return dropSummary
@@ -263,6 +278,14 @@ access(all) contract DropTypes {
                 continue
             }
 
+            var royaltyRate = 0.0
+            if let tmpRoyalties = resolver!.resolveContractView(resourceType: nftType, viewType: Type<MetadataViews.Royalties>()) {
+                let royalties = tmpRoyalties as! MetadataViews.Royalties
+                for r in royalties.getRoyalties() {
+                    royaltyRate = royaltyRate + r.cut
+                }
+            }
+
             summaries.append(DropSummary(
                 id: drop!.uuid,
                 display: dropDetails.display,
@@ -273,7 +296,8 @@ access(all) contract DropTypes {
                 commissionRate: dropDetails.commissionRate,
                 nftType: CompositeType(dropDetails.nftType)!,
                 address: minter,
-                phases: phaseSummaries
+                phases: phaseSummaries,
+                royaltyRate: royaltyRate
             ))
         }
 

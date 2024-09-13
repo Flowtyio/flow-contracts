@@ -52,6 +52,9 @@ access(all) contract OpenEditionInitializer: ContractInitializer {
             container.addDrop(<- drop)
         }
         
-        return NFTMetadata.initialize(acct: contractAcct, collectionInfo: collectionInfo, nftType: nftType)
+        let caps = NFTMetadata.initialize(acct: contractAcct, collectionInfo: collectionInfo, nftType: nftType)
+        caps.ownerCap.borrow()!.addMetadata(id: 0, data: data)
+
+        return caps
     }
 }

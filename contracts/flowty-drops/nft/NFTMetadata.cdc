@@ -36,6 +36,26 @@ access(all) contract NFTMetadata {
 
         access(all) let data: {String: AnyStruct}
 
+        access(all) fun getThumbnail(): {MetadataViews.File} {
+            return self.thumbnail
+        }
+
+        access(all) fun getTraits(): MetadataViews.Traits? {
+            return self.traits
+        }
+
+        access(all) fun getEditions(): MetadataViews.Editions? {
+            return self.editions
+        }
+
+        access(all) fun getExternalURL(): MetadataViews.ExternalURL? {
+            return self.externalURL
+        }
+
+        access(all) fun getRoyalties(): MetadataViews.Royalties? {
+            return self.royalties
+        }
+
         init(
             name: String,
             description: String,

@@ -14,6 +14,22 @@ access(all) contract UniversalCollection {
             return <- create Collection(nftType: self.nftType)
         }
 
+        access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
+            pre {
+                token.getType() == self.nftType: "unexpected nft type being deposited"
+            }
+
+            destroy self.ownedNFTs.insert(key: token.id, <-token)
+        }
+
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
+            return &self.ownedNFTs[id]
+        }
+
+        access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
+            return <- self.ownedNFTs.remove(key: withdrawID)!
+        }
+
         init (nftType: Type) {
             self.ownedNFTs <- {}
             self.nftType = nftType
