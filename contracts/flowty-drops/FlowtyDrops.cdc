@@ -327,6 +327,10 @@ access(all) contract FlowtyDrops {
         access(all) fun remainingForAddress(addr: Address, totalMinted: Int): Int? {
             return nil
         }
+
+        access(all) view fun getMaxPerMint(addr: Address?, totalMinted: Int, data: {String: AnyStruct}): Int? {
+            return nil
+        }
     }
 
     access(all) struct interface Pricer {

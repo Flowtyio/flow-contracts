@@ -14,6 +14,10 @@ access(all) contract FlowtyAddressVerifiers {
             return num <= self.maxPerMint
         }
 
+        access(all) view fun getMaxPerMint(addr: Address?, totalMinted: Int, data: {String: AnyStruct}): Int? {
+            return self.maxPerMint
+        }
+
         access(Mutate) fun setMaxPerMint(_ value: Int) {
             self.maxPerMint = value
         }
@@ -47,6 +51,10 @@ access(all) contract FlowtyAddressVerifiers {
                 return allowedMints - totalMinted
             }
             return nil
+        }
+
+        access(all) view fun getMaxPerMint(addr: Address?, totalMinted: Int, data: {String: AnyStruct}): Int? {
+            return addr != nil ? self.remainingForAddress(addr: addr!, totalMinted: totalMinted) : nil
         }
 
         access(Mutate) fun setAddress(addr: Address, value: Int) {
