@@ -487,7 +487,7 @@
       "source": "./contracts/flowty-drops/DropTypes.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x934da91a977f1ac4",
+        "testnet": "0x22f23883bf122007",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
