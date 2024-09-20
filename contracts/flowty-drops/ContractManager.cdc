@@ -6,7 +6,12 @@ access(all) contract ContractManager {
     access(all) let StoragePath: StoragePath
     access(all) let PublicPath: PublicPath
 
+    access(all) let OwnerStoragePath: StoragePath
+    access(all) let OwnerPublicPath: PublicPath
+
     access(all) entitlement Manage
+
+    access(all) event ManagerSaved(uuid: UInt64, contractAddress: Address, ownerAddress: Address)
 
     access(all) resource Manager {
         access(self) let acct: Capability<auth(Storage, Contracts, Keys, Inbox, Capabilities) &Account>
@@ -34,6 +39,26 @@ access(all) contract ContractManager {
 
         access(all) fun getAccount(): &Account {
             return getAccount(self.acct.address)
+        }
+
+        // Should be called after saving a ContractManager resource to signal that a new address stores (and therefore "owns")
+        // this manager resource's acct capability. Without this, it is not possible to track the original creator of a contract
+        // when using the ContractManager
+        access(Manage) fun onSave() {
+            let acct = self.acct.borrow()!
+
+            acct.storage.load<Address>(from: ContractManager.OwnerStoragePath)
+            acct.storage.save(self.owner!.address, to: ContractManager.OwnerStoragePath)
+
+            if !acct.capabilities.get<&Address>(ContractManager.OwnerPublicPath).check() {
+                acct.capabilities.unpublish(ContractManager.OwnerPublicPath)
+                acct.capabilities.publish(
+                    acct.capabilities.storage.issue<&Address>(ContractManager.OwnerStoragePath),
+                    at: ContractManager.OwnerPublicPath
+                )
+            }
+
+            emit ManagerSaved(uuid: self.uuid, contractAddress: self.acct.address, ownerAddress: self.owner!.address)
         }
 
         init(tokens: @FlowToken.Vault, defaultRouterAddress: Address) {
@@ -69,5 +94,9 @@ access(all) contract ContractManager {
         let identifier = "ContractManager_".concat(self.account.address.toString())
         self.StoragePath = StoragePath(identifier: identifier)!
         self.PublicPath = PublicPath(identifier: identifier)!
+
+        let ownerIdentifier = "ContractManager_Owner_".concat(self.account.address.toString())
+        self.OwnerStoragePath = StoragePath(identifier: ownerIdentifier)!
+        self.OwnerPublicPath = PublicPath(identifier: ownerIdentifier)!
     }
 }

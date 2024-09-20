@@ -2,6 +2,7 @@ import "FlowtyDrops"
 import "MetadataViews"
 import "ViewResolver"
 import "AddressUtils"
+import "ContractManager"
 
 access(all) contract DropTypes {
     access(all) struct Display {
@@ -34,6 +35,7 @@ access(all) contract DropTypes {
         access(all) let minterCount: Int
         access(all) let commissionRate: UFix64
         access(all) let nftType: String
+        access(all) let creator: Address?
 
         access(all) let address: Address?
         access(all) let mintedByAddress: Int?
@@ -55,10 +57,12 @@ access(all) contract DropTypes {
             nftType: Type,
             address: Address?,
             phases: [PhaseSummary],
-            royaltyRate: UFix64
+            royaltyRate: UFix64,
+            creator: Address?
         ) {
             self.id = id
             self.display = Display(display)
+            self.creator = creator
             
             self.medias = []
             for m in medias?.items ?? [] {
@@ -169,6 +173,8 @@ access(all) contract DropTypes {
         let contractAddress = AddressUtils.parseAddress(nftType)!
         let contractName = segments[2]
 
+        let creator = self.getCreatorAddress(contractAddress)
+
         let resolver = getAccount(contractAddress).contracts.borrow<&{ViewResolver}>(name: contractName)
         if resolver == nil {
             return nil
@@ -224,7 +230,8 @@ access(all) contract DropTypes {
             nftType: CompositeType(dropDetails.nftType)!,
             address: minter,
             phases: phaseSummaries,
-            royaltyRate: royaltyRate
+            royaltyRate: royaltyRate,
+            creator: creator
         )
 
         return dropSummary
@@ -235,6 +242,8 @@ access(all) contract DropTypes {
         let segments = nftTypeIdentifier.split(separator: ".")
         let contractAddress = AddressUtils.parseAddress(nftType)!
         let contractName = segments[2]
+
+        let creator = self.getCreatorAddress(contractAddress)
         
         let resolver = getAccount(contractAddress).contracts.borrow<&{ViewResolver}>(name: contractName)
         if resolver == nil {
@@ -297,10 +306,37 @@ access(all) contract DropTypes {
                 nftType: CompositeType(dropDetails.nftType)!,
                 address: minter,
                 phases: phaseSummaries,
-                royaltyRate: royaltyRate
+                royaltyRate: royaltyRate,
+                creator: creator
             ))
         }
 
         return summaries
+    }
+
+    access(all) fun getCreatorAddress(_ contractAddress: Address): Address? {
+        // We look for a two-way relationship between creator and collection. A contract can expose an address at ContractManager.OwnerPublicPath
+        // specifying the owning account. If found, we will check that same account for a &ContractManager.Manager resource at ContractManager.PublicPath,
+        // which, when borrowed, can return its underlying account address using &Manager.getAccount().
+        //
+        // If the addresses match, we consider this account to be the creator of a drop
+        let tmp = getAccount(contractAddress).capabilities.borrow<&Address>(ContractManager.OwnerPublicPath)
+        if tmp == nil {
+            return nil
+        }
+
+        let creator = *(tmp!)
+        let manager = getAccount(creator).capabilities.borrow<&ContractManager.Manager>(ContractManager.PublicPath)
+        if manager == nil {
+            return nil
+        }
+
+        let contractManagerAccount = manager!.getAccount()
+
+        if contractManagerAccount.address != contractAddress {
+            return nil
+        }
+ 
+        return creator
     }
 }
