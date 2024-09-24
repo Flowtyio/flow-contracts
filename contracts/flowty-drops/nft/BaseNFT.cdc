@@ -40,7 +40,14 @@ access(all) contract interface BaseNFT: ViewResolver {
             ]
         }
 
+        // In case the implementor of `NFT` wants to override resolved views,
+        // the actual logic to perform view resolution is done in another method,
+        // with this one calling directly into it.
         access(all) fun resolveView(_ view: Type): AnyStruct? {
+            return self._resolveView(view)
+        }
+
+        access(all) fun _resolveView(_ view: Type): AnyStruct? {
             if view == Type<MetadataViews.Serial>() {
                 return MetadataViews.Serial(self.id)
             }

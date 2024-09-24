@@ -94,6 +94,7 @@ access(all) contract NFTMetadata {
         access(Owner) fun addMetadata(id: UInt64, data: Metadata) {
             pre {
                 self.metadata[id] == nil: "id already has metadata assigned"
+                !self.frozen: "metadata is frozen and cannot be updated"
             }
 
             self.metadata[id] = data
