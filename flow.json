@@ -359,7 +359,7 @@
       "source": "./contracts/flowty-drops/ContractManager.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -367,7 +367,7 @@
       "source": "./contracts/flowty-drops/initializers/ContractInitializer.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -375,7 +375,7 @@
       "source": "./contracts/flowty-drops/initializers/ContractBorrower.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -383,7 +383,7 @@
       "source": "./contracts/flowty-drops/initializers/OpenEditionInitializer.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -391,7 +391,7 @@
       "source": "./contracts/flowty-drops/nft/BaseCollection.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -399,7 +399,7 @@
       "source": "./contracts/flowty-drops/nft/ContractFactoryTemplate.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -407,7 +407,7 @@
       "source": "./contracts/flowty-drops/nft/ContractFactory.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -415,7 +415,7 @@
       "source": "./contracts/flowty-drops/nft/OpenEditionTemplate.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -423,7 +423,7 @@
       "source": "./contracts/flowty-drops/nft/UniversalCollection.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -431,7 +431,7 @@
       "source": "./contracts/flowty-drops/nft/BaseNFT.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -439,7 +439,7 @@
       "source": "./contracts/flowty-drops/nft/NFTMetadata.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -447,7 +447,7 @@
       "source": "./contracts/flowty-drops/FlowtyDrops.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -455,7 +455,7 @@
       "source": "./contracts/flowty-drops/DropFactory.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -463,7 +463,7 @@
       "source": "./contracts/flowty-drops/FlowtyActiveCheckers.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -471,7 +471,7 @@
       "source": "./contracts/flowty-drops/FlowtyPricers.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -479,7 +479,7 @@
       "source": "./contracts/flowty-drops/FlowtyAddressVerifiers.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x155bce6ac93f3e00",
+        "testnet": "0x5d06d5357cdf8063",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },
@@ -487,7 +487,7 @@
       "source": "./contracts/flowty-drops/DropTypes.cdc",
       "aliases": {
         "testing": "0x0000000000000006",
-        "testnet": "0x53ff16309e318ae2",
+        "testnet": "0xa8d83f18fd8ba80a",
         "emulator": "0xf8d6e0586b0a20c7"
       }
     },

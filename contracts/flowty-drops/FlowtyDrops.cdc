@@ -5,12 +5,19 @@ import "AddressUtils"
 import "FungibleTokenMetadataViews"
 import "FungibleTokenRouter"
 
+// FlowtyDrops is a contract to help collections manage their primary sale needs on flow.
+// Multiple drops can be made for a single contract (like how TopShot has had lots of pack drops),
+// and can be split into phases to represent different behaviors over the course of a drop
 access(all) contract FlowtyDrops {
+    // The total number of nfts minted by this contract
+    access(all) var TotalMinted: UInt64
+
     access(all) let ContainerStoragePath: StoragePath
     access(all) let ContainerPublicPath: PublicPath
 
     access(all) event DropAdded(address: Address, id: UInt64, name: String, description: String, imageUrl: String, start: UInt64?, end: UInt64?, nftType: String)
-    access(all) event Minted(address: Address, dropID: UInt64, phaseID: UInt64, nftID: UInt64, nftType: String)
+    access(all) event DropRemoved(address: Address, id: UInt64)
+    access(all) event Minted(address: Address, dropID: UInt64, phaseID: UInt64, nftID: UInt64, nftType: String, totalMinted: UInt64)
     access(all) event PhaseAdded(dropID: UInt64, dropAddress: Address, id: UInt64, index: Int, activeCheckerType: String, pricerType: String, addressVerifierType: String)
     access(all) event PhaseRemoved(dropID: UInt64, dropAddress: Address, id: UInt64)
 
@@ -20,9 +27,9 @@ access(all) contract FlowtyDrops {
     // Interface to expose all the components necessary to participate in a drop
     // and to ask questions about a drop.
     access(all) resource interface DropPublic {
-        access(all) fun borrowPhasePublic(index: Int): &{PhasePublic}
-        access(all) fun borrowActivePhases(): [&{PhasePublic}]
-        access(all) fun borrowAllPhases(): [&{PhasePublic}]
+        access(all) view fun borrowPhasePublic(index: Int): &{PhasePublic}
+        access(all) view fun borrowActivePhases(): [&{PhasePublic}]
+        access(all) view fun borrowAllPhases(): [&{PhasePublic}]
         access(all) fun mint(
             payment: @{FungibleToken.Vault},
             amount: Int,
@@ -31,8 +38,18 @@ access(all) contract FlowtyDrops {
             receiverCap: Capability<&{NonFungibleToken.CollectionPublic}>,
             commissionReceiver: Capability<&{FungibleToken.Receiver}>?,
             data: {String: AnyStruct}
-        ): @{FungibleToken.Vault}
-        access(all) fun getDetails(): DropDetails
+        ): @{FungibleToken.Vault} {
+            pre {
+                self.getDetails().paymentTokenTypes[payment.getType().identifier] == true: "unsupported payment token type"
+                receiverCap.check(): "unvalid nft receiver capability"
+                commissionReceiver == nil || commissionReceiver!.check(): "commission receiver must be nil or a valid capability"
+                self.getType() == Type<@Drop>(): "unsupported type implementing DropPublic"
+                expectedType.isSubtype(of: Type<@{NonFungibleToken.NFT}>()): "expected type must be an NFT"
+                expectedType.identifier == self.getDetails().nftType: "expected type does not match drop details type"
+                receiverCap.check(): "receiver capability is not valid"
+            }
+        }
+        access(all) view fun getDetails(): DropDetails
     }
 
     // A phase represents a stage of a drop. Some drops will only have one
@@ -47,23 +64,23 @@ access(all) contract FlowtyDrops {
         access(all) let resources: @{String: AnyResource}
 
         // returns whether this phase of a drop has started.
-        access(all) fun isActive(): Bool {
+        access(all) view fun isActive(): Bool {
             return self.details.activeChecker.hasStarted() && !self.details.activeChecker.hasEnded()
         }
 
-        access(all) fun getDetails(): PhaseDetails {
+        access(all) view fun getDetails(): PhaseDetails {
             return self.details
         }
 
-        access(EditPhase) fun borrowActiveCheckerAuth(): auth(Mutate) &{ActiveChecker} {
+        access(EditPhase) view fun borrowActiveCheckerAuth(): auth(Mutate) &{ActiveChecker} {
             return &self.details.activeChecker
         }
 
-        access(EditPhase) fun borrowPricerAuth(): auth(Mutate) &{Pricer} {
+        access(EditPhase) view fun borrowPricerAuth(): auth(Mutate) &{Pricer} {
             return &self.details.pricer
         }
 
-        access(EditPhase) fun borrowAddressVerifierAuth(): auth(Mutate) &{AddressVerifier} {
+        access(EditPhase) view fun borrowAddressVerifierAuth(): auth(Mutate) &{AddressVerifier} {
             return &self.details.addressVerifier
         }
 
@@ -75,6 +92,8 @@ access(all) contract FlowtyDrops {
         }
     }
 
+    // The primary resource of this contract. A drop has some top-level details, and some phase-specific details which are encapsulated
+    // by each phase.
     access(all) resource Drop: DropPublic {
         access(all) event ResourceDestroyed(
             uuid: UInt64 = self.uuid,
@@ -87,8 +106,11 @@ access(all) contract FlowtyDrops {
         access(self) let phases: @[Phase]
         // the details of a drop. This includes things like display information and total number of mints
         access(self) let details: DropDetails
+        // capability to mint nfts with. Regardless of where a drop is hosted, the minter itself is what is responsible for creating nfts
+        // and is used by the drop's mint method.
         access(self) let minterCap: Capability<&{Minter}>
 
+        // general-purpose property bags which are needed to ensure extensibility of this resource
         access(all) let data: {String: AnyStruct}
         access(all) let resources: @{String: AnyResource}
 
@@ -102,10 +124,7 @@ access(all) contract FlowtyDrops {
             data: {String: AnyStruct}
         ): @{FungibleToken.Vault} {
             pre {
-                expectedType.isSubtype(of: Type<@{NonFungibleToken.NFT}>()): "expected type must be an NFT"
-                expectedType.identifier == self.details.nftType: "expected type does not match drop details type"
                 self.phases.length > phaseIndex: "phase index is too high"
-                receiverCap.check(): "receiver capability is not valid"
             }
 
             // validate the payment vault amount and type
@@ -116,6 +135,7 @@ access(all) contract FlowtyDrops {
             )
 
             let paymentAmount = phase.details.pricer.getPrice(num: amount, paymentTokenType: payment.getType(), minter: receiverCap.address)
+            assert(payment.balance >= paymentAmount, message: "payment balance is lower than payment amount")
             let withdrawn <- payment.withdraw(amount: paymentAmount) // make sure that we have a fresh vault resource
 
             // take commission
@@ -124,13 +144,14 @@ access(all) contract FlowtyDrops {
                 commissionReceiver!.borrow()!.deposit(from: <-commission)
             }
 
-            assert(phase.details.pricer.getPrice(num: amount, paymentTokenType: withdrawn.getType(), minter: receiverCap.address) * (1.0 - self.details.commissionRate) == withdrawn.balance, message: "incorrect payment amount")
+            // The balance of the payment sent to the creator is equal to the paymentAmount - fees
+            assert(paymentAmount * (1.0 - self.details.commissionRate) == withdrawn.balance, message: "incorrect payment amount")
             assert(phase.details.pricer.getPaymentTypes().contains(withdrawn.getType()), message: "unsupported payment type")
+            assert(phase.details.activeChecker.hasStarted() && !phase.details.activeChecker.hasEnded(), message: "phase is not active")
 
             // mint the nfts
             let minter = self.minterCap.borrow() ?? panic("minter capability could not be borrowed")
             let mintedNFTs: @[{NonFungibleToken.NFT}] <- minter.mint(payment: <-withdrawn, amount: amount, phase: phase, data: data)
-            assert(phase.details.activeChecker.hasStarted() && !phase.details.activeChecker.hasEnded(), message: "phase is not active")
             assert(mintedNFTs.length == amount, message: "incorrect number of items returned")
 
             // distribute to receiver
@@ -141,7 +162,8 @@ access(all) contract FlowtyDrops {
                 let nft <- mintedNFTs.removeFirst()
 
                 let nftType = nft.getType()
-                emit Minted(address: receiverCap.address, dropID: self.uuid, phaseID: phase.uuid, nftID: nft.id, nftType: nftType.identifier)
+                FlowtyDrops.TotalMinted = FlowtyDrops.TotalMinted + 1
+                emit Minted(address: receiverCap.address, dropID: self.uuid, phaseID: phase.uuid, nftID: nft.id, nftType: nftType.identifier, totalMinted: FlowtyDrops.TotalMinted)
 
                 // validate that every nft is the right type
                 assert(nftType == expectedType, message: "unexpected nft type was minted")
@@ -156,23 +178,23 @@ access(all) contract FlowtyDrops {
             return <- payment
         }
 
-        access(Owner) fun borrowPhase(index: Int): auth(EditPhase) &Phase {
+        access(Owner) view fun borrowPhase(index: Int): auth(EditPhase) &Phase {
             return &self.phases[index]
         }
 
 
-        access(all) fun borrowPhasePublic(index: Int): &{PhasePublic} {
+        access(all) view fun borrowPhasePublic(index: Int): &{PhasePublic} {
             return &self.phases[index]
         }
 
-        access(all) fun borrowActivePhases(): [&{PhasePublic}] {
-            let arr: [&{PhasePublic}] = []
+        access(all) view fun borrowActivePhases(): [&{PhasePublic}] {
+            var arr: [&{PhasePublic}] = []
             var count = 0
             while count < self.phases.length {
                 let ref = self.borrowPhasePublic(index: count)
                 let activeChecker = ref.getDetails().activeChecker
                 if activeChecker.hasStarted() && !activeChecker.hasEnded() {
-                    arr.append(ref)
+                    arr = arr.concat([ref])
                 }
 
                 count = count + 1
@@ -181,12 +203,12 @@ access(all) contract FlowtyDrops {
             return arr
         }
 
-        access(all) fun borrowAllPhases(): [&{PhasePublic}] {
-            let arr: [&{PhasePublic}] = []
+        access(all) view fun borrowAllPhases(): [&{PhasePublic}] {
+            var arr: [&{PhasePublic}] = []
             var index = 0
             while index < self.phases.length {
                 let ref = self.borrowPhasePublic(index: index)
-                arr.append(ref)
+                arr = arr.concat([ref])
                 index = index + 1
             }
 
@@ -217,7 +239,7 @@ access(all) contract FlowtyDrops {
             return <- phase
         }
 
-        access(all) fun getDetails(): DropDetails {
+        access(all) view fun getDetails(): DropDetails {
             return self.details
         }
 
@@ -242,6 +264,7 @@ access(all) contract FlowtyDrops {
         access(all) var minters: {Address: Int}
         access(all) let commissionRate: UFix64
         access(all) let nftType: String
+        access(all) let paymentTokenTypes: {String: Bool}
 
         access(all) let data: {String: AnyStruct}
 
@@ -254,7 +277,7 @@ access(all) contract FlowtyDrops {
             self.minters[addr] = self.minters[addr]! + num
         }
 
-        init(display: MetadataViews.Display, medias: MetadataViews.Medias?, commissionRate: UFix64, nftType: String) {
+        init(display: MetadataViews.Display, medias: MetadataViews.Medias?, commissionRate: UFix64, nftType: String, paymentTokenTypes: {String: Bool}) {
             pre {
                 nftType != "": "nftType should be a composite type identifier"
             }
@@ -265,6 +288,8 @@ access(all) contract FlowtyDrops {
             self.commissionRate = commissionRate
             self.minters = {}
             self.nftType = nftType
+            self.paymentTokenTypes = paymentTokenTypes
+
             self.data = {}
         }
     }
@@ -289,8 +314,8 @@ access(all) contract FlowtyDrops {
         // - How many items are left in the current phase?
         // - Can Address x mint on a phase?
         // - What is the cost to mint for the phase I am interested in (for address x)?
-        access(all) fun getDetails(): PhaseDetails
-        access(all) fun isActive(): Bool
+        access(all) view fun getDetails(): PhaseDetails
+        access(all) view fun isActive(): Bool
     }
 
     access(all) struct PhaseDetails {
@@ -319,6 +344,7 @@ access(all) contract FlowtyDrops {
         }
     }
 
+    // The AddressVerifier interface is responsible for determining whether an address is permitted to mint or not
     access(all) struct interface AddressVerifier {
         access(all) fun canMint(addr: Address, num: Int, totalMinted: Int, data: {String: AnyStruct}): Bool {
             return true
@@ -333,12 +359,15 @@ access(all) contract FlowtyDrops {
         }
     }
 
+    // The pricer interface is responsible for the cost of a mint. It can vary by phase
     access(all) struct interface Pricer {
         access(all) fun getPrice(num: Int, paymentTokenType: Type, minter: Address?): UFix64
         access(all) fun getPaymentTypes(): [Type]
     }
 
     access(all) resource interface Minter {
+        // mint is only able to be called either by this contract (FlowtyDrops) or the implementing contract.
+        // In its default implementation, it is assumed that the receiver capability for payment is the FungibleTokenRouter
         access(contract) fun mint(payment: @{FungibleToken.Vault}, amount: Int, phase: &FlowtyDrops.Phase, data: {String: AnyStruct}): @[{NonFungibleToken.NFT}] {
             let resourceAddress = AddressUtils.parseAddress(self.getType())!
             let receiver = getAccount(resourceAddress).capabilities.get<&{FungibleToken.Receiver}>(FungibleTokenRouter.PublicPath).borrow()
@@ -356,9 +385,11 @@ access(all) contract FlowtyDrops {
             return <- nfts
         }
 
+        // required so that the minter interface has a way to create NFTs on its implementing resource
         access(contract) fun createNextNFT(): @{NonFungibleToken.NFT}
     }
     
+    // Struct to wrap obtaining a Drop container. Intended for use with the ViewResolver contract interface
     access(all) struct DropResolver {
         access(self) let cap: Capability<&{ContainerPublic}>
 
@@ -380,7 +411,7 @@ access(all) contract FlowtyDrops {
         access(all) fun getIDs(): [UInt64]
     }
 
-    // Contains drops. 
+    // Container holds drops so that one address can host more than one drop at once
     access(all) resource Container: ContainerPublic {
         access(self) let drops: @{UInt64: Drop}
 
@@ -413,6 +444,7 @@ access(all) contract FlowtyDrops {
                 self.drops.containsKey(id): "drop was not found"
             }
 
+            emit DropRemoved(address: self.owner!.address, id: id)
             return <- self.drops.remove(key: id)!
         }
 
@@ -461,5 +493,7 @@ access(all) contract FlowtyDrops {
 
         self.ContainerStoragePath = StoragePath(identifier: containerIdentifier)!
         self.ContainerPublicPath = PublicPath(identifier: containerIdentifier)!
+
+        self.TotalMinted = 0
     }
 }

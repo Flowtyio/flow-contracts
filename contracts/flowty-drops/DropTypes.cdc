@@ -36,6 +36,7 @@ access(all) contract DropTypes {
         access(all) let commissionRate: UFix64
         access(all) let nftType: String
         access(all) let creator: Address?
+        access(all) let paymentTokenTypes: {String: Bool}
 
         access(all) let address: Address?
         access(all) let mintedByAddress: Int?
@@ -58,7 +59,8 @@ access(all) contract DropTypes {
             address: Address?,
             phases: [PhaseSummary],
             royaltyRate: UFix64,
-            creator: Address?
+            creator: Address?,
+            paymentTokenTypes: {String: Bool}
         ) {
             self.id = id
             self.display = Display(display)
@@ -82,6 +84,7 @@ access(all) contract DropTypes {
             self.blockHeight = b.height
             self.blockTimestamp = UInt64(b.timestamp)
             self.royaltyRate = royaltyRate
+            self.paymentTokenTypes = paymentTokenTypes
         }
     }
 
@@ -118,7 +121,7 @@ access(all) contract DropTypes {
         access(all) let remainingForAddress: Int?
         access(all) let maxPerMint: Int?
 
-        access(all) let quote: Quote?
+        access(all) let quotes: {String: Quote}
 
         init(
             index: Int,
@@ -127,7 +130,7 @@ access(all) contract DropTypes {
             totalMinted: Int?,
             minter: Address?,
             quantity: Int?,
-            paymentIdentifier: String?
+            paymentIdentifiers: [String]
         ) {
             self.index = index
             self.id = phase.uuid
@@ -155,19 +158,17 @@ access(all) contract DropTypes {
                 self.remainingForAddress = nil
             }
 
-            self.maxPerMint = d.addressVerifier.getMaxPerMint(addr: self.address, totalMinted: totalMinted ?? 0, data: {} as {String: AnyStruct})
+            self.maxPerMint = d.addressVerifier.getMaxPerMint(addr: self.address, totalMinted: totalMinted ?? 0, data: {})
+            self.quotes = {}
 
-            if paymentIdentifier != nil && quantity != nil {
-                let price = d.pricer.getPrice(num: quantity!, paymentTokenType: CompositeType(paymentIdentifier!)!, minter: minter)
-
-                self.quote = Quote(price: price, quantity: quantity!, paymentIdentifier: paymentIdentifier!, minter: minter)
-            } else {
-                self.quote = nil
+            for paymentIdentifier in paymentIdentifiers {
+                let price = d.pricer.getPrice(num: quantity!, paymentTokenType: CompositeType(paymentIdentifier)!, minter: minter)
+                self.quotes[paymentIdentifier] = Quote(price: price, quantity: quantity!, paymentIdentifier: paymentIdentifier, minter: minter)
             }
         }
     }
 
-    access(all) fun getDropSummary(nftTypeIdentifier: String, dropID: UInt64, minter: Address?, quantity: Int?, paymentIdentifier: String?): DropSummary? {
+    access(all) fun getDropSummary(nftTypeIdentifier: String, dropID: UInt64, minter: Address?, quantity: Int?, paymentIdentifiers: [String]): DropSummary? {
         let nftType = CompositeType(nftTypeIdentifier) ?? panic("invalid nft type identifier")
         let segments = nftTypeIdentifier.split(separator: ".")
         let contractAddress = AddressUtils.parseAddress(nftType)!
@@ -206,7 +207,7 @@ access(all) contract DropTypes {
                 totalMinted: minter != nil ? dropDetails.minters[minter!] : nil,
                 minter: minter,
                 quantity: quantity,
-                paymentIdentifier: paymentIdentifier
+                paymentIdentifiers: paymentIdentifiers.length > 0 ? paymentIdentifiers : dropDetails.paymentTokenTypes.keys
             )
             phaseSummaries.append(summary)
         }
@@ -231,13 +232,14 @@ access(all) contract DropTypes {
             address: minter,
             phases: phaseSummaries,
             royaltyRate: royaltyRate,
-            creator: creator
+            creator: creator,
+            paymentTokenTypes: dropDetails.paymentTokenTypes
         )
 
         return dropSummary
     }
 
-    access(all) fun getAllDropSummaries(nftTypeIdentifier: String, minter: Address?, quantity: Int?, paymentIdentifier: String?): [DropSummary] {
+    access(all) fun getAllDropSummaries(nftTypeIdentifier: String, minter: Address?, quantity: Int?, paymentIdentifiers: [String]): [DropSummary] {
         let nftType = CompositeType(nftTypeIdentifier) ?? panic("invalid nft type identifier")
         let segments = nftTypeIdentifier.split(separator: ".")
         let contractAddress = AddressUtils.parseAddress(nftType)!
@@ -278,7 +280,7 @@ access(all) contract DropTypes {
                     totalMinted: minter != nil ? dropDetails.minters[minter!] : nil,
                     minter: minter,
                     quantity: quantity,
-                    paymentIdentifier: paymentIdentifier
+                    paymentIdentifiers: paymentIdentifiers.length > 0 ? paymentIdentifiers : dropDetails.paymentTokenTypes.keys
                 )
                 phaseSummaries.append(summary)
             }
@@ -307,7 +309,8 @@ access(all) contract DropTypes {
                 address: minter,
                 phases: phaseSummaries,
                 royaltyRate: royaltyRate,
-                creator: creator
+                creator: creator,
+                paymentTokenTypes: dropDetails.paymentTokenTypes
             ))
         }
 

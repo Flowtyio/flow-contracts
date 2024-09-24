@@ -35,7 +35,7 @@ access(all) contract DropFactory {
 
 
         let nftType = CompositeType(nftTypeIdentifier) ?? panic("invalid nft type identifier")
-        let dropDetails = FlowtyDrops.DropDetails(display: dropDisplay, medias: nil, commissionRate: 0.05, nftType: nftTypeIdentifier)
+        let dropDetails = FlowtyDrops.DropDetails(display: dropDisplay, medias: nil, commissionRate: 0.05, nftType: nftTypeIdentifier, paymentTokenTypes: {paymentTokenType.identifier: true})
         let drop <- FlowtyDrops.createDrop(details: dropDetails, minterCap: minterCap, phases: <- [<-phase])
 
         return <- drop
@@ -67,7 +67,7 @@ access(all) contract DropFactory {
         let phase <- FlowtyDrops.createPhase(details: phaseDetails)
 
         let nftType = CompositeType(nftTypeIdentifier) ?? panic("invalid nft type identifier")
-        let dropDetails = FlowtyDrops.DropDetails(display: dropDisplay, medias: nil, commissionRate: 0.05, nftType: nftTypeIdentifier)
+        let dropDetails = FlowtyDrops.DropDetails(display: dropDisplay, medias: nil, commissionRate: 0.05, nftType: nftTypeIdentifier, paymentTokenTypes: {paymentTokenType.identifier: true})
         let drop <- FlowtyDrops.createDrop(details: dropDetails, minterCap: minterCap, phases: <- [<-phase])
 
         return <- drop
