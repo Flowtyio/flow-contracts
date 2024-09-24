@@ -1,10 +1,8 @@
 import "FungibleToken"
-import "FungibleTokenMetadataViews"
 import "MetadataViews"
+import "FungibleTokenMetadataViews"
 
-
-// THIS CONTRACT IS FOR TESTING PURPOSES ONLY!
-access(all) contract ExampleToken {
+access(all) contract ExampleToken: FungibleToken {
 
     /// Total supply of ExampleTokens in existence
     access(all) var totalSupply: UFix64
@@ -66,32 +64,36 @@ access(all) contract ExampleToken {
             self.balance = balance
         }
 
-        access(all) view fun getBalance(): UFix64 {
-            return self.balance
-        }
-
-        access(all) view fun getDefaultStoragePath(): StoragePath? {
-            return /storage/exampleTokenVault
-        }
-
-        access(all) view fun getDefaultPublicPath(): PublicPath? {
-            return /public/exampleTokenPublic
-        }
-
-        access(all) view fun getDefaultReceiverPath(): PublicPath? {
-            return /public/exampleTokenPublic
-        }
-
         access(all) view fun isAvailableToWithdraw(amount: UFix64): Bool {
-            return self.balance >= amount
+            return amount <= self.balance
         }
 
-        /// Same as getViews above, but on a specific NFT instead of a contract
-        access(all) view fun getViews(): [Type] {
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
+            return {self.getType(): true}
+        }
+
+        access(all) view fun isSupportedVaultType(type: Type): Bool {
+            if (type == self.getType()) { return true } else { return false }
+        }
+
+        access(all) fun createEmptyVault(): @{FungibleToken.Vault} {
+            return <-create Vault(balance: 0.0)
+        }
+
+        /// Get all the Metadata Views implemented by ExampleToken
+        ///
+        /// @return An array of Types defining the implemented views. This value will be used by
+        ///         developers to know which parameter to pass to the resolveView() method.
+        ///
+        access(all) view fun getViews(): [Type]{
             return ExampleToken.getContractViews(resourceType: nil)
         }
 
-        /// Same as resolveView above, but on a specific NFT instead of a contract
+        /// Get a Metadata View from ExampleToken
+        ///
+        /// @param view: The Type of the desired view.
+        /// @return A structure representing the requested view.
+        ///
         access(all) fun resolveView(_ view: Type): AnyStruct? {
             return ExampleToken.resolveContractView(resourceType: nil, viewType: view)
         }
@@ -112,16 +114,6 @@ access(all) contract ExampleToken {
             return <-create Vault(balance: amount)
         }
 
-        access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
-            return {
-                Type<@ExampleToken.Vault>(): true
-            }
-        }
-
-        access(all) view fun isSupportedVaultType(type: Type): Bool {
-            return type == Type<@ExampleToken.Vault>()
-        }
-
         /// deposit
         ///
         /// Function that takes a Vault object as an argument and adds
@@ -139,8 +131,8 @@ access(all) contract ExampleToken {
             destroy vault
         }
 
-        access(all) fun createEmptyVault(): @Vault {
-            return <- ExampleToken.createEmptyVault()
+        access(contract) fun burnCallback() {
+            ExampleToken.totalSupply = ExampleToken.totalSupply - self.balance
         }
     }
 
@@ -151,7 +143,7 @@ access(all) contract ExampleToken {
     /// and store the returned Vault in their storage in order to allow their
     /// account to be able to receive deposits of this token type.
     ///
-    access(all) fun createEmptyVault(): @Vault {
+    access(all) fun createEmptyVault(vaultType: Type): @Vault {
         return <-create Vault(balance: 0.0)
     }
 
@@ -227,6 +219,7 @@ access(all) contract ExampleToken {
         }
     }
 
+    /// Gets a list of the metadata views that this contract supports
     access(all) view fun getContractViews(resourceType: Type?): [Type] {
         return [Type<FungibleTokenMetadataViews.FTView>(),
                 Type<FungibleTokenMetadataViews.FTDisplay>(),
@@ -234,6 +227,21 @@ access(all) contract ExampleToken {
                 Type<FungibleTokenMetadataViews.TotalSupply>()]
     }
 
+    access(all) fun mintTokens(amount: UFix64): @{FungibleToken.Vault} {
+        let admin = self.account.storage.borrow<&Administrator>(from: /storage/exampleTokenAdmin)!
+        let minter <- admin.createNewMinter(allowedAmount: amount)
+
+        let tokens <- minter.mintTokens(amount: amount)
+        destroy minter
+
+        return <- tokens
+    }
+
+    /// Get a Metadata View from ExampleToken
+    ///
+    /// @param view: The Type of the desired view.
+    /// @return A structure representing the requested view.
+    ///
     access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
         switch viewType {
             case Type<FungibleTokenMetadataViews.FTView>():
@@ -244,15 +252,15 @@ access(all) contract ExampleToken {
             case Type<FungibleTokenMetadataViews.FTDisplay>():
                 let media = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(
-                        url: "https://example.com"
+                        url: "example.com"
                     ),
                     mediaType: "image/svg+xml"
                 )
                 let medias = MetadataViews.Medias([media])
                 return FungibleTokenMetadataViews.FTDisplay(
-                    name: "Example Token",
+                    name: "EXAMPLE Token",
                     symbol: "EXAMPLE",
-                    description: "",
+                    description: "This is an example token",
                     externalURL: MetadataViews.ExternalURL("https://flow.com"),
                     logos: medias,
                     socials: {
@@ -286,11 +294,10 @@ access(all) contract ExampleToken {
         let vault <- create Vault(balance: self.totalSupply)
         self.account.storage.save(<-vault, to: /storage/exampleTokenVault)
 
-        // Create a public capability to the stored Vault that only exposes
-        // the `deposit` method through the `Receiver` interface
-        //
-        let publicCap = self.account.capabilities.storage.issue<&ExampleToken.Vault>(/storage/exampleTokenVault)
-        self.account.capabilities.publish(publicCap, at: /public/exampleTokenPublic)
+        let cap = self.account.capabilities.storage.issue<&{FungibleToken.Vault}>(/storage/exampleTokenVault)
+        self.account.capabilities.publish(cap, at: /public/exampleTokenReceiver)
+        self.account.capabilities.publish(cap, at: /public/exampleTokenBalance)
+
 
         let admin <- create Administrator()
         self.account.storage.save(<-admin, to: /storage/exampleTokenAdmin)
