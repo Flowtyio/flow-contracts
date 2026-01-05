@@ -20,9 +20,7 @@ access(all) contract NFTCatalog {
         nftType : Type,
         storagePath: StoragePath,
         publicPath: PublicPath,
-        privatePath: PrivatePath,
         publicLinkedType : Type,
-        privateLinkedType : Type,
         displayName : String,
         description: String,
         externalURL : String
@@ -37,9 +35,7 @@ access(all) contract NFTCatalog {
         nftType : Type,
         storagePath: StoragePath,
         publicPath: PublicPath,
-        privatePath: PrivatePath,
         publicLinkedType : Type,
-        privateLinkedType : Type,
         displayName : String,
         description: String,
         externalURL : String
@@ -76,16 +72,19 @@ access(all) contract NFTCatalog {
     // Used to authenticate proposals made to the catalog
 
     access(all) resource interface NFTCatalogProposalManagerPublic {
-        access(all) fun getCurrentProposalEntry(): String?
+        access(all) view fun getCurrentProposalEntry(): String?
     }
-    access(all) resource NFTCatalogProposalManager : NFTCatalogProposalManagerPublic {
+
+    access(all) entitlement ProposalActionOwner
+
+    access(all) resource NFTCatalogProposalManager: NFTCatalogProposalManagerPublic {
             access(self) var currentProposalEntry: String?
 
-            access(all) fun getCurrentProposalEntry(): String? {
+            access(all) view fun getCurrentProposalEntry(): String? {
                 return self.currentProposalEntry
             }
 
-            access(all) fun setCurrentProposalEntry(identifier: String?) {
+            access(ProposalActionOwner) fun setCurrentProposalEntry(identifier: String?) {
                 self.currentProposalEntry = identifier
             }
 
@@ -107,7 +106,7 @@ access(all) contract NFTCatalog {
             self.shouldUseSnapshot = shouldUseSnapshot
         }
 
-        access(all) fun getCatalogSnapshot(): {String : NFTCatalogMetadata} {
+        access(all) view fun getCatalogSnapshot(): {String : NFTCatalogMetadata} {
             return self.catalogSnapshot
         }
 
@@ -123,28 +122,22 @@ access(all) contract NFTCatalog {
 
     // NFTCollectionData
     // Represents information about an NFT collection resource
-    // Note: Not suing the struct from Metadata standard due to
+    // Note: Not using the struct from Metadata standard due to
     // inability to store functions
     access(all) struct NFTCollectionData {
 
         access(all) let storagePath : StoragePath
         access(all) let publicPath : PublicPath
-        access(all) let privatePath: PrivatePath
         access(all) let publicLinkedType: Type
-        access(all) let privateLinkedType: Type
 
         init(
             storagePath : StoragePath,
             publicPath : PublicPath,
-            privatePath : PrivatePath,
             publicLinkedType : Type,
-            privateLinkedType : Type
         ) {
             self.storagePath = storagePath
             self.publicPath = publicPath
-            self.privatePath = privatePath
             self.publicLinkedType = publicLinkedType
-            self.privateLinkedType = privateLinkedType
         }
     }
 
@@ -192,7 +185,7 @@ access(all) contract NFTCatalog {
         If obtaining all elements from the catalog is essential, please
         use the getCatalogKeys and forEachCatalogKey methods instead.
      */
-    access(all) fun getCatalog() : {String : NFTCatalogMetadata} {
+    access(all) view fun getCatalog() : {String : NFTCatalogMetadata} {
         let snapshot = self.account.storage.borrow<&NFTCatalog.Snapshot>(from: /storage/CatalogSnapshot)
         if snapshot != nil {
             let snapshot = snapshot!
@@ -206,7 +199,7 @@ access(all) contract NFTCatalog {
         }
     }
 
-    access(all) fun getCatalogKeys(): [String] {
+    access(all) view fun getCatalogKeys(): [String] {
         return self.catalog.keys
     }
 
@@ -218,11 +211,11 @@ access(all) contract NFTCatalog {
         return self.catalog[collectionIdentifier]
     }
 
-    access(all) fun getCollectionsForType(nftTypeIdentifier: String) : {String : Bool}? {
+    access(all) view fun getCollectionsForType(nftTypeIdentifier: String) : {String : Bool}? {
         return self.catalogTypeData[nftTypeIdentifier]
     }
 
-    access(all) fun getCatalogTypeData() : {String : {String : Bool}} {
+    access(all) view fun getCatalogTypeData() : {String : {String : Bool}} {
         return self.catalogTypeData
     }
 
@@ -264,7 +257,7 @@ access(all) contract NFTCatalog {
         self.removeCatalogProposal(proposalID : proposalID)
     }
 
-    access(all) fun getCatalogProposals() : {UInt64 : NFTCatalogProposal} {
+    access(all) view fun getCatalogProposals() : {UInt64 : NFTCatalogProposal} {
         return self.catalogProposals
     }
 
@@ -272,7 +265,7 @@ access(all) contract NFTCatalog {
         return self.catalogProposals[proposalID]
     }
 
-    access(all) fun getCatalogProposalKeys() : [UInt64] {
+    access(all) view fun getCatalogProposalKeys() : [UInt64] {
         return self.catalogProposals.keys
     }
 
@@ -300,9 +293,7 @@ access(all) contract NFTCatalog {
             nftType: metadata.nftType,
             storagePath: metadata.collectionData.storagePath,
             publicPath: metadata.collectionData.publicPath,
-            privatePath: metadata.collectionData.privatePath,
             publicLinkedType : metadata.collectionData.publicLinkedType,
-            privateLinkedType : metadata.collectionData.privateLinkedType,
             displayName : metadata.collectionDisplay.name,
             description: metadata.collectionDisplay.description,
             externalURL : metadata.collectionDisplay.externalURL.url
@@ -329,9 +320,7 @@ access(all) contract NFTCatalog {
             nftType: metadata.nftType,
             storagePath: metadata.collectionData.storagePath,
             publicPath: metadata.collectionData.publicPath,
-            privatePath: metadata.collectionData.privatePath,
             publicLinkedType : metadata.collectionData.publicLinkedType,
-            privateLinkedType : metadata.collectionData.privateLinkedType,
             displayName : metadata.collectionDisplay.name,
             description: metadata.collectionDisplay.description,
             externalURL : metadata.collectionDisplay.externalURL.url
